@@ -1,0 +1,158 @@
+/* Add this to your App.css - Simple fixes to prevent overflow and ensure everything fits in screenshots */
+
+/* ===== PREVENT HORIZONTAL OVERFLOW ===== */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ===== FIX CONTAINER WIDTHS ===== */
+.container-fluid {
+  max-width: 100%;
+  overflow-x: hidden;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* ===== FIX ROW OVERFLOW ===== */
+.row {
+  margin-left: -15px;
+  margin-right: -15px;
+  max-width: 100%;
+}
+
+.col, [class*="col-"] {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* ===== FIX IMAGES ===== */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== FIX BACKGROUND IMAGES ===== */
+[style*="backgroundImage"],
+[style*="background-image"] {
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+/* ===== FIX CARDS AND CONTENT ===== */
+.card {
+  max-width: 100%;
+}
+
+/* ===== FIX BUTTONS ===== */
+button, .btn {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* ===== FIX FORMS ===== */
+.form-control, .form-select, input, textarea {
+  max-width: 100%;
+}
+
+/* ===== FIX NAVBAR ===== */
+nav {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* ===== FIX FOOTER ===== */
+footer {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* ===== FIX EXPLORE PAGE CAROUSEL ===== */
+.adventure-card {
+  max-width: 90vw;
+}
+
+/* For mobile - hide side cards to prevent overflow */
+@media (max-width: 768px) {
+  .adventure-card.next,
+  .adventure-card.prev {
+    display: none;
+  }
+  
+  .adventure-card.active {
+    position: relative;
+    transform: none !important;
+  }
+}
+
+/* ===== FIX HERO SECTIONS ===== */
+.hero-section,
+[style*="height: '100vh'"],
+[style*="height: 100vh"] {
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+/* ===== FIX PARTICLES OVERFLOW ===== */
+.position-absolute {
+  max-width: 100%;
+}
+
+/* ===== FIX TEXT OVERFLOW ===== */
+h1, h2, h3, h4, h5, h6, p, span, div {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 576px) {
+  .container-fluid {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  .display-3, .display-4, .display-5 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .py-5 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+}
+
+/* ===== SCREENSHOT MODE (Optional - add class to body) ===== */
+body.screenshot-mode {
+  zoom: 0.8; /* Zoom out slightly to fit more */
+}
+
+/* If you want full page screenshots, uncomment this: */
+/*
+body.screenshot-mode {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+body.screenshot-mode nav,
+body.screenshot-mode footer {
+  position: relative !important;
+}
+*/
