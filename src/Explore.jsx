@@ -1,606 +1,1202 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { MapPin, X, Info, Calendar, Users, Flag, Award, Globe, Home, ChevronRight } from 'lucide-react';
+import { MapPin, X, Info, Calendar, Users, Flag, Award, Globe, Home } from 'lucide-react';
 
-// Philippine Heritage Sites with detailed information
-const heritageSites = [
+// Combine ALL Cebu Heritage Sites & Destinations (1-30)
+const cebuSites = [
   {
     id: 1,
-    name: 'Banaue Rice Terraces',
-    location: 'Ifugao Province, Cordillera',
-    lat: 16.9267,
-    lng: 121.0566,
-    image: 'src/image/banaue-rice-terraces.jpg',
-    description: 'Ancient rice terraces carved into mountains over 2,000 years ago.',
-    category: 'Cultural Heritage',
-    heritageStatus: 'UNESCO World Heritage Site',
-    era: 'Pre-colonial period (2,000+ years)',
-    region: 'Cordillera Administrative Region',
-    established: 'Approx. 2000 years ago',
-    builtBy: 'Ifugao ancestors',
+    name: 'Magellan\'s Cross',
+    location: 'Cebu City, Cebu',
+    lat: 10.2935,
+    lng: 123.9018,
+    image: 'src/image/magellans-cross.jpg',
+    description: 'Historic cross planted by Ferdinand Magellan upon arriving in Cebu in 1521.',
+    category: 'Historical Heritage',
+    heritageStatus: 'National Historical Landmark',
+    era: 'Spanish Colonial (1521)',
+    region: 'Central Visayas',
+    established: 'March 15, 1521',
+    builtBy: 'Ferdinand Magellan and Spanish explorers',
     
-    // Detailed Information
     detailedInfo: {
-      overview: 'Often called the "Eighth Wonder of the World", these terraces were carved into the mountains of Ifugao by ancestors of the indigenous people. The terraces are approximately 2,000 years old and cover 10,360 square kilometers of mountainside.',
-      culturalSignificance: 'The terraces illustrate the remarkable ability of human culture to adapt to new social and climate pressures as well as to implement and develop new ideas and technologies. They represent a sustainable agricultural system that has been maintained for centuries.',
-      architecture: 'Built using stone and mud walls, the terraces are located approximately 1,500 meters above sea level. They are fed by an ancient irrigation system from the rainforests above the terraces.',
-      currentStatus: 'Currently, there are threats of climate change, deforestation, and modernization affecting the maintenance of the terraces. Efforts are underway for preservation.',
-      visitorInfo: 'Best visited from February to June. Cultural immersion programs available with local Ifugao communities.'
+      overview: 'Magellan\'s Cross is a Christian cross planted by Portuguese and Spanish explorers as ordered by Ferdinand Magellan upon arriving in Cebu in the Philippines on March 15, 1521. The cross is housed in a chapel next to the Basilica del Santo Niño on Magallanes Street. The original wooden cross is encased in tindalo wood to protect it from pilgrims who take fragments of it as relics.',
+      culturalSignificance: 'Marks the birth of Roman Catholicism in the Philippines and represents the beginning of Spanish colonization. The site is considered sacred and is a major pilgrimage destination for Filipino Catholics.',
+      architecture: 'The cross is housed in a small octagonal chapel with a painted ceiling depicting the historic planting of the cross. The wooden encasement was added in 1834 to protect the original cross.',
+      currentStatus: 'Active pilgrimage site visited by thousands daily. Well-preserved with ongoing maintenance by the Augustinian Order.',
+      visitorInfo: 'Open daily from 6:00 AM to 8:00 PM. Free admission. Located in the heart of downtown Cebu City, walking distance from other historical sites.'
     },
     
     culturalPractices: [
-      'Traditional rice planting rituals',
-      'Hudhud chants (UNESCO Intangible Heritage)',
-      'Woodcarving traditions',
-      'Ifugao textile weaving'
+      'Candle lighting rituals',
+      'Prayer offerings',
+      'Religious pilgrimages',
+      'Sinulog Festival connection'
     ],
     
     nativeFloraFauna: [
-      'Ifugao rice varieties',
-      'Native bird species',
-      'Mountain pine trees',
-      'Indigenous medicinal plants'
+      'Urban plaza trees',
+      'Ornamental plants',
+      'City birds',
+      'Heritage garden species'
     ],
     
-    preservation: 'Managed by the Ifugao Rice Terraces Commission and UNESCO'
+    preservation: 'Managed by the Augustinian Province of Santo Niño de Cebu'
   },
   {
     id: 2,
-    name: 'Intramuros',
-    location: 'Manila, National Capital Region',
-    lat: 14.5896,
-    lng: 120.9747,
-    image: 'src/image/intramuros.jpg',
-    description: 'Historic walled city from the Spanish colonial period.',
+    name: 'Fort San Pedro',
+    location: 'Cebu City, Cebu',
+    lat: 10.2929,
+    lng: 123.9067,
+    image: 'src/image/fort-san-pedro.jpg',
+    description: 'The oldest and smallest triangular bastion fort in the Philippines, built in 1565.',
     category: 'Historical Heritage',
     heritageStatus: 'National Historical Landmark',
-    era: 'Spanish Colonial (1571)',
-    region: 'National Capital Region',
-    established: '1571',
-    builtBy: 'Spanish conquistadors',
+    era: 'Spanish Colonial (1565)',
+    region: 'Central Visayas',
+    established: '1565 (rebuilt 1738)',
+    builtBy: 'Spanish conquistadors under Miguel López de Legazpi',
     
     detailedInfo: {
-      overview: 'Intramuros, meaning "within the walls", is the 0.67-square-kilometer historic walled area within the city of Manila. It was the seat of government during the Spanish colonial period and the American occupation.',
-      culturalSignificance: 'Represents over 300 years of Spanish colonial influence in the Philippines. Houses important institutions like Manila Cathedral, San Agustin Church (UNESCO site), and Fort Santiago.',
-      architecture: 'Features Spanish colonial architecture with massive stone walls, gates, and colonial-era buildings. The walls stretch approximately 4.5 kilometers.',
-      currentStatus: 'Well-preserved with ongoing restoration projects. Major tourist attraction with museums and cultural shows.',
-      visitorInfo: 'Open daily. Guided tours available. Cultural shows every weekend.'
+      overview: 'Fort San Pedro is a military defense structure built by Spanish conquistador Miguel López de Legazpi. It is the oldest triangular bastion fort in the country and served as the nucleus of the first Spanish settlement in the Philippines. The fort has been a witness to the Spanish, American, and Japanese periods.',
+      culturalSignificance: 'Represents the military might of Spanish colonial rule and served as a defense against Muslim raiders. During the American period, it was used as a military barracks, and during WWII, the Japanese used it as a prisoner-of-war camp.',
+      architecture: 'Triangular bastion fort made of coral stones with three bastions named La Concepcion, Ignacio de Loyola, and San Miguel. The walls are 20 feet high and 8 feet thick. Features include the Corpo de Guardia (Guard House), Vivienda del Teniente (Lieutenant\'s Quarters), and various artillery pieces.',
+      currentStatus: 'Now a historical park and museum housing artifacts from Spanish and American colonial periods. Popular venue for cultural events.',
+      visitorInfo: 'Open daily 7:00 AM to 7:00 PM. Entrance fee: ₱30 for adults. Guided tours available. Evening cultural shows on weekends.'
     },
     
     culturalPractices: [
-      'Spanish-era religious festivals',
       'Historical reenactments',
-      'Traditional Filipino-Spanish cuisine',
-      'Colonial architecture tours'
+      'Cultural performances',
+      'Educational tours',
+      'Heritage photography'
     ],
     
     nativeFloraFauna: [
-      'Ancient acacia trees within fortifications',
-      'Colonial-era garden plants',
-      'Urban bird species',
-      'Historical landscaping'
+      'Heritage trees within fortification',
+      'Flowering shrubs',
+      'Fort garden plants',
+      'Urban wildlife'
     ],
     
-    preservation: 'Managed by the Intramuros Administration under the Department of Tourism'
+    preservation: 'Managed by Cebu City Government and National Historical Commission'
   },
   {
     id: 3,
-    name: 'Vigan Heritage Village',
-    location: 'Ilocos Sur, Region I',
-    lat: 17.5747,
-    lng: 120.3869,
-    image: 'src/image/vigan-heritage.JPG',
-    description: 'Best-preserved Spanish colonial town in Asia.',
-    category: 'Cultural Heritage',
-    heritageStatus: 'UNESCO World Heritage Site',
-    era: 'Spanish Colonial (16th century)',
-    region: 'Ilocos Region',
-    established: '1572',
-    builtBy: 'Spanish settlers and Chinese traders',
+    name: 'Basilica del Santo Niño',
+    location: 'Cebu City, Cebu',
+    lat: 10.2947,
+    lng: 123.9012,
+    image: 'src/image/santo-nino.jpg',
+    description: 'The oldest Roman Catholic church in the Philippines, founded in 1565.',
+    category: 'Historical Heritage',
+    heritageStatus: 'Minor Basilica, National Cultural Treasure',
+    era: 'Spanish Colonial (1565)',
+    region: 'Central Visayas',
+    established: '1565',
+    builtBy: 'Augustinian friars',
     
     detailedInfo: {
-      overview: 'Vigan is the best-preserved example of a planned Spanish colonial town in Asia. Its architecture reflects the coming together of cultural elements from elsewhere in the Philippines, from China and from Europe, resulting in a culture and townscape that have no parallel anywhere in East and Southeast Asia.',
-      culturalSignificance: 'Represents a unique fusion of Asian building design and construction with European colonial architecture and planning. The town has maintained its authenticity in terms of form and design, materials and substance, and use and function.',
-      architecture: 'Features unique architecture known as "Bahay na Bato" (Stone House) with ground floors of stone and upper floors of wood. The town follows a grid street pattern laid out in accordance with the Laws of the Indies.',
-      currentStatus: 'Active living heritage site with residents maintaining traditional lifestyles. Strict conservation guidelines in place.',
-      visitorInfo: 'Best explored on a kalesa (horse-drawn carriage). Night tours available with traditional music.'
+      overview: 'The Basilica Minore del Santo Niño de Cebu is the oldest Roman Catholic church in the Philippines. It houses the revered image of the Santo Niño (Child Jesus) given by Magellan to Queen Juana of Cebu in 1521. The current structure was built in 1739 after fires destroyed previous wooden churches.',
+      culturalSignificance: 'Center of Catholic devotion in Cebu and the entire Philippines. The Santo Niño image is considered miraculous and is the focus of the annual Sinulog Festival, one of the country\'s grandest religious and cultural celebrations.',
+      architecture: 'Baroque architecture with thick walls and buttresses to withstand earthquakes. Features include ornate altars, religious paintings, a historical museum, and a beautiful courtyard. The church can accommodate thousands of devotees.',
+      currentStatus: 'Active place of worship with daily masses. Major pilgrimage destination attracting millions annually, especially during Sinulog Festival every third Sunday of January.',
+      visitorInfo: 'Open daily 5:00 AM to 8:00 PM. Free admission but donations welcome. Dress modestly. Museum open 8:00 AM to 5:00 PM. Best to visit early morning or late afternoon to avoid crowds.'
     },
     
     culturalPractices: [
-      'Traditional pottery making (burnay)',
-      'Abel Iloko weaving',
-      'Vigan longganisa making',
-      'Spanish-era festival celebrations'
+      'Sinulog Festival (January)',
+      'Novena masses',
+      'Candle offerings',
+      'Traditional Catholic rituals',
+      'Religious processions'
     ],
     
     nativeFloraFauna: [
-      'Heritage trees in plazas',
-      'Traditional medicinal garden plants',
-      'Local river ecosystem',
-      'Urban biodiversity'
+      'Basilica courtyard plants',
+      'Heritage trees',
+      'Religious garden flora',
+      'Urban bird species'
     ],
     
-    preservation: 'Managed by the Vigan Conservation Council and UNESCO'
+    preservation: 'Managed by the Augustinian Province of Santo Niño de Cebu and National Museum'
   },
   {
     id: 4,
-    name: 'Tubbataha Reefs',
-    location: 'Palawan, MIMAROPA',
-    lat: 8.9532,
-    lng: 119.8612,
-    image: 'src/image/tubbataha.jpg',
-    description: 'Pristine marine sanctuary with exceptional biodiversity.',
-    category: 'Natural Heritage',
-    heritageStatus: 'UNESCO World Heritage Site',
-    era: 'Natural Formation (millions of years)',
-    region: 'MIMAROPA Region',
-    established: 'Natural park since 1988',
-    builtBy: 'Natural coral formation',
+    name: 'Casa Gorordo Museum',
+    location: 'Parian, Cebu City',
+    lat: 10.2956,
+    lng: 123.9008,
+    image: 'src/image/casa-gorordo.jpg',
+    description: 'A 19th-century house museum showcasing Filipino lifestyle during Spanish era.',
+    category: 'Cultural Heritage',
+    heritageStatus: 'National Historical Landmark',
+    era: 'Spanish Colonial (mid-1800s)',
+    region: 'Central Visayas',
+    established: 'Mid-19th century',
+    builtBy: 'Alejandro Reynes y Rosales (original owner)',
     
     detailedInfo: {
-      overview: 'Tubbataha Reefs Natural Park is a 97,030-hectare marine protected area located in the middle of the Sulu Sea. It is composed of two large coral atolls (North and South Atoll) and the Jessie Beazley Reef.',
-      culturalSignificance: 'Traditional fishing grounds for the Cuyonon and Kagayanen people. The name "Tubbataha" comes from the Samal language meaning "long reef exposed at low tide".',
-      biodiversity: 'Home to 600 species of fish, 360 species of corals (about half of all coral species in the world), 11 species of sharks, 13 species of dolphins and whales, and 100 species of birds.',
-      currentStatus: 'One of the most well-preserved coral reef ecosystems in the world. Limited diving allowed with strict regulations.',
-      visitorInfo: 'Accessible only by liveaboard dive boats from March to June. Strict no-take, no-touch policy.'
+      overview: 'Casa Gorordo Museum is a heritage house that showcases the lifestyle of a prominent Filipino family during the Spanish colonial period. The house was the residence of Cebu\'s first Filipino bishop, Juan Gorordo, and four generations of the Gorordo family. It is a classic example of a 19th-century Filipino bahay na bato (stone house).',
+      culturalSignificance: 'Represents the affluent Filipino lifestyle during Spanish times. The house reflects the blend of European and local architectural styles and customs. It provides insights into 19th-century Filipino domestic life, social customs, and material culture.',
+      architecture: 'Two-story coral stone and hardwood structure featuring azoteas (open galleries), capiz shell windows, wooden shutters, period furniture, religious artifacts, and kitchen utensils. The ground floor is made of coral stones while the upper floor is constructed of wood, a typical bahay na bato design.',
+      currentStatus: 'Fully restored museum operated by the Ramon Aboitiz Foundation Inc. Houses extensive collection of period furniture, photographs, and household items.',
+      visitorInfo: 'Open Tuesday to Sunday, 9:00 AM to 5:00 PM. Entrance fee: ₱75. Guided tours included. Photography allowed. Air-conditioned. Gift shop available.'
     },
     
     culturalPractices: [
-      'Traditional sustainable fishing methods',
-      'Marine conservation rituals',
-      'Coastal community monitoring',
-      'Eco-tourism practices'
+      'Heritage conservation',
+      'Historical research',
+      'Cultural education programs',
+      'Traditional Filipino customs display'
     ],
     
     nativeFloraFauna: [
-      'Hard and soft corals',
-      'Sea turtles (hawksbill, green)',
-      'Shark species (whale sharks, tiger sharks)',
-      'Manta rays and dolphins',
-      'Numerous reef fish species'
+      'Traditional garden plants',
+      'Heritage trees',
+      'Indoor ornamental plants',
+      'Period garden design'
     ],
     
-    preservation: 'Managed by the Tubbataha Management Office and UNESCO'
+    preservation: 'Managed and restored by Ramon Aboitiz Foundation Inc. (RAFI)'
   },
   {
     id: 5,
-    name: 'Chocolate Hills',
-    location: 'Bohol, Region VII',
-    lat: 9.8297,
-    lng: 124.1435,
-    image: 'src/image/chocolate-hills.jpeg',
-    description: 'Unique geological formation of over 1,200 hills.',
+    name: 'Yap-Sandiego Ancestral House',
+    location: 'Parian, Cebu City',
+    lat: 10.2961,
+    lng: 123.9001,
+    image: 'src/image/yap-sandiego.jpg',
+    description: 'One of the oldest Chinese-Filipino houses in the Philippines, built in the late 1600s.',
+    category: 'Cultural Heritage',
+    heritageStatus: 'National Historical Landmark',
+    era: 'Spanish Colonial (late 1600s)',
+    region: 'Central Visayas',
+    established: 'Late 17th century',
+    builtBy: 'Chinese merchant Don Juan Yap and his wife Doña Maria Florido',
+    
+    detailedInfo: {
+      overview: 'The Yap-Sandiego Ancestral House is one of the oldest residential houses in the Philippines and the oldest documented Chinese house outside of China. Built in the late 1600s, it showcases the integration of Chinese and Filipino architectural styles. The house has been continuously occupied and is still owned by descendants of the original builders.',
+      culturalSignificance: 'Represents the historical Chinese-Filipino (Chinoy) community in Cebu and their significant contribution to Philippine culture and commerce. The Parian district where it stands was the designated Chinese enclave during Spanish times.',
+      architecture: 'Made entirely of coral stones and molave hardwood, featuring thick walls (about 2 feet), ventanillas (small windows), wooden floorboards, Chinese roof tiles, and antique furniture. The ground floor has thick walls for security and commerce, while upper floors were for living quarters. Features include a kitchen, dining area, bedrooms, and a chapel.',
+      currentStatus: 'Private residence and museum operated by the Sandiego-Ramon family. Houses one of the finest private collections of antique furniture and religious artifacts in Cebu.',
+      visitorInfo: 'Open daily 9:00 AM to 6:00 PM. Entrance fee: ₱50. Guided tours by family members available. Small but rich in artifacts. Combine visit with Casa Gorordo nearby.'
+    },
+    
+    culturalPractices: [
+      'Chinese-Filipino heritage preservation',
+      'Traditional family customs',
+      'Antique collection curation',
+      'Cultural tours and education'
+    ],
+    
+    nativeFloraFauna: [
+      'Traditional courtyard plants',
+      'Heritage potted plants',
+      'Antique garden design',
+      'Indoor ornamental species'
+    ],
+    
+    preservation: 'Privately maintained by Sandiego-Ramon family with support from cultural organizations'
+  },
+  {
+    id: 6,
+    name: 'Osmeña Peak',
+    location: 'Dalaguete, Cebu',
+    lat: 9.8667,
+    lng: 123.4667,
+    image: 'src/image/osmena-peak.jpg',
+    description: 'The highest peak in Cebu at 1,015 meters, offering panoramic views of jagged hills.',
     category: 'Natural Heritage',
-    heritageStatus: 'National Geological Monument',
-    era: 'Geological formation (millions of years)',
+    heritageStatus: 'Natural Landmark',
+    era: 'Geological formation',
     region: 'Central Visayas',
     established: 'Natural formation',
     builtBy: 'Natural geological processes',
     
     detailedInfo: {
-      overview: 'The Chocolate Hills are a geological formation of at least 1,260 hills spread over an area of more than 50 square kilometers. They are covered in green grass that turns chocolate brown during the dry season, hence the name.',
-      culturalSignificance: 'Featured in Philippine mythology and folklore. Local legend tells of two giants who fought for days, throwing rocks and sand at each other, which formed the hills.',
-      geology: 'Formed from marine limestone on top of an impermeable layer of clay. The symmetrical, conical shapes are the result of coral deposits and the action of rainwater and erosion.',
-      currentStatus: 'Protected as a National Geological Monument. Tourism is managed to prevent environmental degradation.',
-      visitorInfo: 'Best viewed from the Chocolate Hills Complex viewpoint. Dry season (March-May) for the "chocolate" color.'
+      overview: 'Osmeña Peak is the highest point in Cebu Island at 1,015 meters (3,330 feet) above sea level. Located in the Mantalongon mountain range in Dalaguete, it offers spectacular 360-degree views of jagged, verdant hills reminiscent of the Chocolate Hills in Bohol. On clear days, visitors can see neighboring islands including Negros and Bohol.',
+      culturalSignificance: 'Named after Sergio Osmeña Sr., the second President of the Philippines who hailed from Cebu. Popular trekking and camping destination for locals and tourists. Important for environmental awareness and eco-tourism.',
+      biodiversity: 'Cool highland climate supporting unique vegetation. Area is rich in pine trees, wildflowers, and grasslands. Bird watching opportunities. Part of the Mantalongon mountain range ecosystem.',
+      currentStatus: 'Popular hiking and camping destination. Basic facilities available. Environmental conservation efforts ongoing to prevent degradation from over-tourism.',
+      visitorInfo: 'Open 24/7. Entrance fee: ₱30. Easy 20-minute hike from parking area. Best visited early morning for sunrise or late afternoon. Camping allowed (bring own equipment). Dress warmly as temperature can drop at night. 3-4 hours drive from Cebu City.'
     },
     
     culturalPractices: [
-      'Local folklore storytelling',
-      'Traditional farming around hills',
-      'Environmental conservation practices',
-      'Cultural festivals celebrating the hills'
+      'Eco-tourism',
+      'Hiking and camping culture',
+      'Photography tourism',
+      'Environmental awareness programs'
     ],
     
     nativeFloraFauna: [
-      'Native grasses and shrubs',
-      'Philippine tarsier (nearby sanctuary)',
-      'Various bird species',
-      'Indigenous plant species adapted to limestone'
+      'Pine trees',
+      'Highland grasses',
+      'Wildflowers',
+      'Mountain birds',
+      'Native shrubs'
     ],
     
-    preservation: 'Managed by the Department of Environment and Natural Resources'
+    preservation: 'Managed by Dalaguete Municipal Government with local community involvement'
   },
-  // Add these to your heritageSites array in Explore.jsx (after the existing 5)
-
-{
-  id: 6,
-  name: 'Puerto Princesa Underground River',
-  location: 'Palawan, MIMAROPA',
-  lat: 10.1933,
-  lng: 118.9266,
-  image: 'src/image/puerto-river.jpg', 
-  description: 'World\'s longest navigable underground river with unique ecosystem.',
-  category: 'Natural Heritage',
-  heritageStatus: 'UNESCO World Heritage Site, New 7 Wonders of Nature',
-  era: 'Natural Formation (millions of years)',
-  region: 'MIMAROPA Region',
-  established: 'Declared National Park in 1971',
-  builtBy: 'Natural limestone karst formation',
-  
-  detailedInfo: {
-    overview: 'The Puerto Princesa Subterranean River National Park features a spectacular limestone karst landscape with an underground river that flows directly into the sea. The river is approximately 8.2 km long and contains major formations of stalactites and stalagmites.',
-    culturalSignificance: 'Considered sacred by indigenous Tagbanua people. Local legends speak of spirits guarding the cave.',
-    biodiversity: 'Home to 800 plant species, 195 bird species, 30 mammal species, and 19 reptile species. The underground river ecosystem includes unique species adapted to complete darkness.',
-    currentStatus: 'One of the New 7 Wonders of Nature. Strict visitor limits to preserve the ecosystem.',
-    visitorInfo: 'Requires boat ride from Sabang. Limited to 900 visitors per day. Best visited November to May.'
+  {
+    id: 7,
+    name: 'Kawasan Falls',
+    location: 'Badian, Cebu',
+    lat: 9.8089,
+    lng: 123.3747,
+    image: 'src/image/kawasan-falls.webp',
+    description: 'A three-tiered waterfall system with turquoise blue waters, popular for canyoneering.',
+    category: 'Natural Heritage',
+    heritageStatus: 'Protected Natural Area',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Natural formation',
+    builtBy: 'Natural hydrological processes',
+    
+    detailedInfo: {
+      overview: 'Kawasan Falls is a three-stage cascade of clear turquoise water located in the mountainous interior of Badian. The main waterfall drops about 40 meters into a natural pool perfect for swimming. The falls are fed by the Matutinao River and flow year-round. The area has become famous for canyoneering adventures where participants jump off cliffs, swim through canyons, and rappel down waterfalls.',
+      culturalSignificance: 'One of Cebu\'s most iconic natural attractions, drawing thousands of local and international visitors. Has become a symbol of Cebu\'s natural beauty and adventure tourism. Important source of livelihood for Badian residents through tourism.',
+      biodiversity: 'Lush tropical forest surrounds the falls with diverse plant and animal life. The river ecosystem supports various freshwater species. Bamboo groves, ferns, and native trees thrive in the area. Wildlife includes birds, butterflies, and small mammals.',
+      currentStatus: 'Major tourist destination with developed facilities including bamboo cottages, changing rooms, and food stalls. Ongoing efforts to balance tourism with environmental conservation.',
+      visitorInfo: 'Open daily 6:00 AM to 5:00 PM. Entrance fee: ₱40. 15-20 minute walk from entrance to first falls. Life jackets available for rent (₱50). Bamboo rafts available. Canyoneering packages start at ₱1,500. Best visited on weekdays to avoid crowds. 3 hours from Cebu City.'
+    },
+    
+    culturalPractices: [
+      'Adventure tourism',
+      'Canyoneering culture',
+      'Community-based tourism',
+      'Environmental conservation efforts'
+    ],
+    
+    nativeFloraFauna: [
+      'Tropical forest trees',
+      'Bamboo groves',
+      'Ferns and mosses',
+      'Freshwater fish',
+      'Forest birds and butterflies'
+    ],
+    
+    preservation: 'Managed by Badian Municipal Government and local barangay with private operators'
   },
-  
-  culturalPractices: [
-    'Tagbanua spiritual rituals',
-    'Sustainable cave tourism',
-    'Indigenous forest management',
-    'Biodiversity monitoring'
-  ],
-  
-  nativeFloraFauna: [
-    'Palawan bearcat',
-    'Philippine cockatoo',
-    'Palawan hornbill',
-    'Underground river crabs',
-    'Unique cave swiftlets'
-  ],
-  
-  preservation: 'Managed by City Government of Puerto Princesa and DENR'
-},
-{
-  id: 7,
-  name: 'Baroque Churches of the Philippines',
-  location: 'Various Locations',
-  lat: 14.5896,
-  lng: 120.9747,
-  image: 'src/image/baroqueChurch.jpg',
-  description: 'Four Baroque churches showcasing Spanish colonial architecture.',
-  category: 'Historical Heritage',
-  heritageStatus: 'UNESCO World Heritage Site',
-  era: 'Spanish Colonial (16th-18th century)',
-  region: 'Multiple Regions',
-  established: '16th-18th centuries',
-  builtBy: 'Spanish friars and Filipino artisans',
-  
-  detailedInfo: {
-    overview: 'This UNESCO site comprises four churches: San Agustin Church in Manila, Paoay Church in Ilocos Norte, Santa Maria Church in Ilocos Sur, and Miagao Church in Iloilo. These churches represent the unique interpretation of European Baroque by Filipino and Chinese craftsmen.',
-    culturalSignificance: 'Symbolize the fusion of European design with local materials and techniques. Show the spread of Christianity in the Philippines during Spanish rule.',
-    architecture: 'Earthquake Baroque style with massive buttresses. Features intricate facades with tropical motifs and indigenous elements.',
-    currentStatus: 'Active churches with regular services. Major pilgrimage sites during religious festivals.',
-    visitorInfo: 'Open for worship and tours. Each church has its own visiting hours and festivals.'
+  {
+    id: 8,
+    name: 'Tumalog Falls',
+    location: 'Oslob, Cebu',
+    lat: 9.5336,
+    lng: 123.3733,
+    image: 'src/image/tumalog-falls.jpg',
+    description: 'A mystical curtain-like waterfall with mist-shrouded pools, known for its ethereal beauty.',
+    category: 'Natural Heritage',
+    heritageStatus: 'Natural Landmark',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Natural formation',
+    builtBy: 'Natural geological formation',
+    
+    detailedInfo: {
+      overview: 'Tumalog Falls, also known as Toslob Falls, is a unique curtain-type waterfall located in the mountains of Oslob. Unlike typical plunge waterfalls, the water cascades down like a curtain from the cliff face, creating a misty, ethereal atmosphere. The falls stand approximately 95 feet high and create a shallow wading pool at the base surrounded by lush vegetation.',
+      culturalSignificance: 'Considered one of the most photographed waterfalls in Cebu due to its unique appearance and mystical atmosphere. Popular for pre-wedding photo shoots and nature photography. Represents Cebu\'s hidden natural gems.',
+      biodiversity: 'Surrounded by dense tropical vegetation including ferns, vines, and native trees. The constant mist creates a microclimate supporting unique plant species. Area is home to various birds and insects adapted to the humid environment.',
+      currentStatus: 'Increasingly popular tourist destination, especially combined with Oslob whale shark watching. Facilities are basic to maintain natural ambiance. Local community manages the site.',
+      visitorInfo: 'Open daily 6:00 AM to 5:00 PM. Entrance fee: ₱20. Habal-habal (motorcycle) ride from main road: ₱50-100 roundtrip. Easy 10-minute walk from drop-off point. Wading pool available but can be cold. Best photographed in morning light. Often combined with whale shark watching in Oslob. 3.5 hours from Cebu City.'
+    },
+    
+    culturalPractices: [
+      'Nature photography',
+      'Local tourism entrepreneurship',
+      'Environmental appreciation',
+      'Community-based tourism'
+    ],
+    
+    nativeFloraFauna: [
+      'Moss-covered rocks',
+      'Tropical ferns',
+      'Hanging vines',
+      'Native forest trees',
+      'Freshwater insects'
+    ],
+    
+    preservation: 'Managed by local barangay government of Tumalog, Oslob'
   },
-  
-  culturalPractices: [
-    'Traditional Catholic masses',
-    'Religious festivals (Paoay Sand Dunes Festival)',
-    'Church music traditions',
-    'Pilgrimage traditions'
-  ],
-  
-  nativeFloraFauna: [
-    'Ancient churchyard trees',
-    'Heritage garden plants',
-    'Bell towers housing bats',
-    'Historical landscaping'
-  ],
-  
-  preservation: 'Managed by respective dioceses and National Historical Commission'
-},
-{
-  id: 8,
-  name: 'Mount Hamiguitan Range',
-  location: 'Davao Oriental, Mindanao',
-  lat: 6.7444,
-  lng: 126.1814,
-  image: 'src/image/mount-hamiguitan.jpg', // Using ivan.jpg
-  description: 'Mountain range with unique pygmy forest and rich biodiversity.',
-  category: 'Natural Heritage',
-  heritageStatus: 'UNESCO World Heritage Site',
-  era: 'Geological formation',
-  region: 'Davao Region',
-  established: 'Declared Wildlife Sanctuary in 2004',
-  builtBy: 'Natural volcanic formation',
-  
-  detailedInfo: {
-    overview: 'Mount Hamiguitan Range Wildlife Sanctuary is a mountain ridge in Davao Oriental known for its unique pygmy forest (bonsai field) and rich biodiversity. It features five distinct vegetation types from lowland to montane forests.',
-    culturalSignificance: 'Sacred to the Mandaya and Kaagan indigenous peoples. Home to numerous endemic species found nowhere else.',
-    biodiversity: 'Hosts 1,380 species with 341 endemic to the Philippines. Includes 163 species of butterflies, 7 amphibians, 27 reptiles, and 13 mammals.',
-    currentStatus: 'Strictly protected area with limited access. Important for climate change research.',
-    visitorInfo: 'Requires DENR permit and local guide. Best visited March to May. Challenging trekking routes.'
+  {
+    id: 9,
+    name: 'Sirao Flower Garden',
+    location: 'Sirao, Cebu City',
+    lat: 10.3500,
+    lng: 123.9667,
+    image: 'src/image/sirao-garden.jpg',
+    description: 'Colorful flower gardens known as "Little Amsterdam" for its celosia flower fields.',
+    category: 'Cultural Heritage',
+    heritageStatus: 'Tourism Attraction',
+    era: 'Modern (2015)',
+    region: 'Central Visayas',
+    established: '2015',
+    builtBy: 'Local flower farmers',
+    
+    detailedInfo: {
+      overview: 'Sirao Flower Garden, nicknamed "Little Amsterdam," is a flower farm turned tourist attraction located in the mountain barangay of Sirao, Cebu City. Originally a simple celosia flower farm supplying the local market, it gained fame on social media for its vibrant, colorful flower fields resembling Dutch tulip gardens. The gardens now feature various flowers including celosia, sunflowers, zinnias, and other ornamental plants.',
+      culturalSignificance: 'Represents the entrepreneurial spirit of Cebuanos turning agriculture into agri-tourism. The site went viral on social media and became a phenomenon, inspiring similar flower gardens across the Philippines. Important for local economy providing jobs to residents.',
+      biodiversity: 'While cultivated rather than wild, the gardens support pollinators like bees and butterflies. The cool highland climate allows for various temperate flowers to thrive. Surrounding area still has native vegetation and pine trees.',
+      currentStatus: 'Highly popular Instagram-worthy destination. Multiple gardens now operate in Sirao area. Well-maintained with photo spots, swings, and viewing decks. Can get crowded on weekends.',
+      visitorInfo: 'Open daily 6:00 AM to 6:00 PM. Entrance fee: ₱50-100 depending on garden. About 45 minutes from downtown Cebu City. Cool temperature, bring light jacket. Best visited during flower bloom season (October to January). Multiple garden options available. Habal-habal transportation from Busay.'
+    },
+    
+    culturalPractices: [
+      'Agri-tourism',
+      'Instagram/social media culture',
+      'Flower farming traditions',
+      'Community entrepreneurship'
+    ],
+    
+    nativeFloraFauna: [
+      'Celosia flowers (various colors)',
+      'Sunflowers',
+      'Zinnias',
+      'Marigolds',
+      'Butterflies and bees'
+    ],
+    
+    preservation: 'Privately owned and maintained by local flower farmers and entrepreneurs'
   },
-  
-  culturalPractices: [
-    'Mandaya weaving traditions',
-    'Indigenous forest protection rituals',
-    'Sustainable resource gathering',
-    'Traditional ecological knowledge'
-  ],
-  
-  nativeFloraFauna: [
-    'Philippine eagle',
-    'Hamiguitan pitcher plant',
-    'Pygmy trees (centuries old)',
-    'Rafflesia species',
-    'Unique orchid varieties'
-  ],
-  
-  preservation: 'Managed by DENR and local indigenous groups'
-},
-{
-  id: 9,
-  name: 'Rice Terraces of the Philippine Cordilleras',
-  location: 'Ifugao, Mountain Province',
-  lat: 16.9333,
-  lng: 121.1333,
-  image: 'src/image/cordillera-rice.avif',
-  description: 'Cluster of rice terrace clusters maintained by Ifugao communities.',
-  category: 'Cultural Heritage',
-  heritageStatus: 'UNESCO World Heritage Site',
-  era: 'Pre-colonial (2,000+ years)',
-  region: 'Cordillera Administrative Region',
-  established: 'Approx. 2000 years ago',
-  builtBy: 'Ifugao indigenous communities',
-  
-  detailedInfo: {
-    overview: 'This UNESCO site includes five terrace clusters: Batad, Bangaan, Hungduan, Mayoyao, and Nagacadan. These terraces represent a continuous cultural landscape where traditional practices are still maintained.',
-    culturalSignificance: 'Living cultural landscape where traditional rice farming continues. Represents harmonious relationship between humans and environment.',
-    architecture: 'Built entirely by hand without machinery. Sophisticated irrigation system from mountain forests.',
-    currentStatus: 'Some terraces need restoration. Community-based tourism developing.',
-    visitorInfo: 'Requires trekking. Homestays available with local families. Best visited during planting (June-July) or harvest (Nov-Dec).'
+  {
+    id: 10,
+    name: 'Moalboal - Pescador Island',
+    location: 'Moalboal, Cebu',
+    lat: 9.9450,
+    lng: 123.3733,
+    image: 'src/image/moalboal.jpg',
+    description: 'Famous for the sardine run, turtle sanctuary, and world-class diving at Pescador Island.',
+    category: 'Natural Heritage',
+    heritageStatus: 'Marine Protected Area',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Marine sanctuary since 1980s',
+    builtBy: 'Natural marine ecosystem',
+    
+    detailedInfo: {
+      overview: 'Moalboal is a coastal town famous for its incredible marine biodiversity, particularly the sardine run where millions of sardines form massive underwater schools near the shore. Pescador Island, located just off the coast, is one of the Philippines\' premier dive sites featuring a dramatic underwater cliff drop-off. The area is also known for regular sea turtle sightings and vibrant coral reefs.',
+      culturalSignificance: 'Transformed from a quiet fishing village into an international diving destination. The conservation success story of Pescador Island shows community-led marine protection. Important for sustainable tourism and marine conservation awareness.',
+      biodiversity: 'Extremely rich marine life including millions of sardines, sea turtles (green and hawksbill), colorful reef fish, octopus, frogfish, nudibranchs, and occasional thresher sharks. Pescador Island features healthy coral reefs, sea fans, and sponges. Over 200 species of fish documented.',
+      currentStatus: 'Thriving eco-tourism and diving destination. Strict marine sanctuary rules enforced. Sustainable tourism practices in place. Some areas experiencing pressure from over-tourism.',
+      visitorInfo: 'Accessible year-round, best diving March to June. Sardine run viewable right from Panagsama Beach (free). Snorkeling gear rental: ₱150-200. Diving packages from ₱1,500. Pescador Island boat tour: ₱300-500. Accommodation ranges from budget to mid-range. About 3 hours from Cebu City.'
+    },
+    
+    culturalPractices: [
+      'Sustainable diving tourism',
+      'Marine conservation efforts',
+      'Community-based tourism',
+      'Environmental education programs'
+    ],
+    
+    nativeFloraFauna: [
+      'Sardine schools (millions)',
+      'Green and hawksbill sea turtles',
+      'Coral reefs (hard and soft)',
+      'Tropical reef fish',
+      'Octopus and nudibranchs'
+    ],
+    
+    preservation: 'Managed by Moalboal Municipal Government and local dive shops through Marine Protected Area'
   },
-  
-  culturalPractices: [
-    'Traditional rice cycle rituals',
-    'Community cooperation (bayanihan)',
-    'Indigenous governance systems',
-    'Oral history preservation'
-  ],
-  
-  nativeFloraFauna: [
-    'Traditional rice varieties',
-    'Native forest species',
-    'Mountain stream ecosystems',
-    'Indigenous fruit trees'
-  ],
-  
-  preservation: 'Managed by Ifugao communities with UNESCO support'
-},
-{
-  id: 10,
-  name: 'Coron Island',
-  location: 'Palawan, MIMAROPA',
-  lat: 12.0000,
-  lng: 120.2000,
-  image: 'src/image/coron-island.webp', // Using ivan.jpg
-  description: 'Island known for pristine lakes, limestone cliffs, and WWII wrecks.',
-  category: 'Natural Heritage',
-  heritageStatus: 'Protected Area',
-  era: 'Natural formation',
-  region: 'MIMAROPA Region',
-  established: 'Natural formation',
-  builtBy: 'Natural karst formation',
-  
-  detailedInfo: {
-    overview: 'Coron Island is famous for its seven brackish lakes, with Kayangan Lake considered the cleanest in the Philippines. The island features dramatic limestone cliffs, hidden lagoons, and several WWII Japanese shipwrecks.',
-    culturalSignificance: 'Ancestral domain of the Tagbanua people. Sacred lakes with spiritual significance.',
-    biodiversity: 'Rich marine biodiversity including coral gardens. Unique lake ecosystems with species adapting to varying salinity.',
-    currentStatus: 'Partially protected ancestral domain. Popular diving and eco-tourism destination.',
-    visitorInfo: 'Accessible by boat from Coron town. Best visited October to May. Some lakes require indigenous guide.'
+  {
+    id: 11,
+    name: 'Malapascua Island',
+    location: 'Daanbantayan, Cebu',
+    lat: 11.3333,
+    lng: 124.1167,
+    image: 'src/image/malapascua.jpg',
+    description: 'Small island paradise famous for thresher shark diving and pristine white beaches.',
+    category: 'Natural Heritage',
+    heritageStatus: 'Marine Protected Area',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Natural island',
+    builtBy: 'Natural coral and sand formation',
+    
+    detailedInfo: {
+      overview: 'Malapascua Island is a small tropical island measuring only 2.5km long and 1km wide, located at the northernmost tip of Cebu. The island is world-renowned as one of the few places where thresher sharks can be seen daily at Monad Shoal, a sunken island plateau. Beyond diving, the island features powdery white-sand beaches, particularly Bounty Beach and Logon Beach.',
+      culturalSignificance: 'Rose to international fame in the 1990s when divers discovered the regular thresher shark sightings. The island community successfully balanced tourism development with traditional fishing livelihoods. Recovery from Typhoon Yolanda (2013) showcased resilience of island communities.',
+      biodiversity: 'Famous for pelagic thresher sharks, manta rays, and occasional whale sharks. Rich coral reefs with macro life including nudibranchs, pygmy seahorses, and mandarin fish. Over 20 dive sites including caves, walls, and wrecks. Marine sanctuary protects coral reefs and marine life.',
+      currentStatus: 'Premier diving destination attracting divers worldwide. Sustainable tourism practices developing. Island infrastructure improving while maintaining laid-back atmosphere. Conservation efforts ongoing.',
+      visitorInfo: 'Access via 30-minute boat from Maya Port (2.5 hours north of Cebu City). Thresher shark diving requires early morning dives (5:00 AM). Diving packages from ₱1,800. Accommodation ranges from budget to upscale. Best season November to May. Island electricity limited to evenings. Bring cash as ATMs unreliable.'
+    },
+    
+    culturalPractices: [
+      'World-class diving culture',
+      'Sustainable island tourism',
+      'Traditional fishing practices',
+      'Community resilience programs'
+    ],
+    
+    nativeFloraFauna: [
+      'Thresher sharks',
+      'Manta rays',
+      'Coral reefs',
+      'Macro marine life',
+      'Coconut palms and beach flora'
+    ],
+    
+    preservation: 'Managed by Daanbantayan Municipal Government with dive operator consortium'
   },
-  
-  culturalPractices: [
-    'Tagbanua fishing traditions',
-    'Lake conservation rituals',
-    'Traditional boat building',
-    'Sustainable tourism practices'
-  ],
-  
-  nativeFloraFauna: [
-    'Giant clams',
-    'Sea turtles',
-    'Colorful reef fish',
-    'Unique lake fish species',
-    'Limestone forest vegetation'
-  ],
-  
-  preservation: 'Managed by Tagbanua Foundation and local government'
-},
-{
-  id: 11,
-  name: 'San Agustin Church',
-  location: 'Intramuros, Manila',
-  lat: 14.5892,
-  lng: 120.9753,
-  image: 'src/image/san-agustin-church.jpg',
-  description: 'Oldest stone church in the Philippines.',
-  category: 'Historical Heritage',
-  heritageStatus: 'UNESCO World Heritage Site',
-  era: 'Spanish Colonial (1607)',
-  region: 'National Capital Region',
-  established: '1607',
-  builtBy: 'Augustinian friars and Chinese artisans',
-  
-  detailedInfo: {
-    overview: 'San Agustin Church is the oldest stone church in the Philippines, completed in 1607. It survived numerous earthquakes, wars, and natural disasters. The adjacent monastery now houses the San Agustin Museum.',
-    culturalSignificance: 'Witness to over 400 years of Philippine history. Site of important historical events including the British occupation and WWII.',
-    architecture: 'Baroque architecture with intricate trompe-l\'oeil murals on ceiling. Features ornate wooden doors and stone carvings.',
-    currentStatus: 'Active Catholic church and museum. Popular wedding venue.',
-    visitorInfo: 'Open daily for mass and tours. Museum has extensive collection of religious art.'
+  {
+    id: 12,
+    name: 'Bantayan Island',
+    location: 'Bantayan, Cebu',
+    lat: 11.1667,
+    lng: 123.7167,
+    image: 'src/image/bantayan.jpg',
+    description: 'Idyllic island known for pristine white sand beaches, crystal clear waters, and laid-back vibe.',
+    category: 'Natural Heritage',
+    heritageStatus: 'Island Municipality',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Natural island',
+    builtBy: 'Natural coral and limestone formation',
+    
+    detailedInfo: {
+      overview: 'Bantayan Island is a first-class island municipality northwest of Cebu mainland, known for its stunning white-sand beaches, particularly Paradise Beach, Sugar Beach, and Kota Beach. The island maintains a peaceful, unhurried atmosphere compared to more developed Philippine beach destinations. Famous for its Holy Week celebrations, fresh seafood, and traditional egg production.',
+      culturalSignificance: 'Known for spectacular Semana Santa (Holy Week) processions dating back to Spanish times. The island\'s traditional dried fish and egg industries have sustained the community for generations. Represents authentic island Filipino life before mass tourism.',
+      biodiversity: 'Pristine beaches with fine white sand. Healthy seagrass beds and coral reefs support marine life. Mangrove areas provide nurseries for fish. Rich birdlife including migratory species. Traditional fishing grounds still productive.',
+      currentStatus: 'Developing tourism destination while maintaining authentic island character. Infrastructure improving but retains laid-back charm. Sustainable tourism efforts ongoing. Recovering and thriving after Typhoon Yolanda.',
+      visitorInfo: 'Access via ferry from Hagnaya Port (3 hours from Cebu City) or flight to Bantayan Airport. Multiple beaches and beach resorts available. Known for fresh seafood restaurants. Island-hopping tours to Virgin Island and Hilantagaan Island. Best visited October to May. Holy Week very crowded but culturally significant. Budget to mid-range accommodation.'
+    },
+    
+    culturalPractices: [
+      'Semana Santa processions',
+      'Traditional fishing',
+      'Egg and dried fish production',
+      'Island-hopping culture',
+      'Beach tourism'
+    ],
+    
+    nativeFloraFauna: [
+      'Coconut plantations',
+      'Seagrass beds',
+      'Coral reefs',
+      'Tropical fish species',
+      'Migratory birds'
+    ],
+    
+    preservation: 'Managed by Bantayan Municipal Government with community involvement'
   },
-  
-  culturalPractices: [
-    'Traditional Catholic liturgy',
-    'Religious art conservation',
-    'Historical research',
-    'Cultural tours'
-  ],
-  
-  nativeFloraFauna: [
-    'Church garden plants',
-    'Ancient convent trees',
-    'Urban wildlife',
-    'Historical courtyard flora'
-  ],
-  
-  preservation: 'Managed by Augustinian Order and National Museum'
-},
-{
-  id: 12,
-  name: 'Mayon Volcano',
-  location: 'Albay, Bicol Region',
-  lat: 13.2567,
-  lng: 123.6850,
-  image: 'src/image/mayon.jpg',
-  description: 'World\'s most perfect cone-shaped volcano.',
-  category: 'Natural Heritage',
-  heritageStatus: 'Natural Park, UNESCO Biosphere Reserve candidate',
-  era: 'Active volcano',
-  region: 'Bicol Region',
-  established: 'Natural formation',
-  builtBy: 'Volcanic activity',
-  
-  detailedInfo: {
-    overview: 'Mayon Volcano is renowned worldwide for its perfect symmetrical cone shape. It is the most active volcano in the Philippines, having erupted over 50 times in the past 400 years. The surrounding area is a national park.',
-    culturalSignificance: 'Central to Bicolano mythology and culture. Featured in local legends including the tragic love story of Daragang Magayon.',
-    biodiversity: 'Diverse ecosystems from lava fields to rainforests. Home to endemic species adapted to volcanic soil.',
-    currentStatus: 'Active volcano with permanent danger zone. Major tourist attraction despite activity.',
-    visitorInfo: 'Viewing decks in various towns. Best viewed October to May. Climbing requires PHIVOLCS clearance.'
+  {
+    id: 13,
+    name: 'Temple of Leah',
+    location: 'Busay, Cebu City',
+    lat: 10.3670,
+    lng: 123.9417,
+    image: 'src/image/temple-leah.jpg',
+    description: 'Grandiose Greco-Roman temple built as a monument of love, offering panoramic city views.',
+    category: 'Cultural Heritage',
+    heritageStatus: 'Private Monument',
+    era: 'Modern (2012)',
+    region: 'Central Visayas',
+    established: '2012 (ongoing construction)',
+    builtBy: 'Teodorico Soriano Adarna',
+    
+    detailedInfo: {
+      overview: 'The Temple of Leah is a grand Greco-Roman-inspired structure built by businessman Teodorico Soriano Adarna as a symbol of his undying love for his late wife, Leah Villa Albino-Adarna. Often called the "Taj Mahal of Cebu," it features massive columns, lion statues, a central museum, and a large statue of Leah. The temple sits on a hilltop offering 360-degree views of Cebu City, the surrounding mountains, and the sea.',
+      culturalSignificance: 'Represents modern expressions of love and devotion. Has become a popular tourist attraction and cultural landmark of Cebu. Reflects Filipino appreciation for grand romantic gestures and family legacy. Popular wedding and event venue.',
+      architecture: 'Greco-Roman architecture with 24 chambers housing the family\'s art collection, a gallery of Leah\'s life, an antique library, and a chapel. Features include massive Corinthian columns, ornate balustrades, bronze lion statues, and a central shrine with Leah\'s statue. Still under construction with plans for additional features.',
+      currentStatus: 'Open to public as a museum and tourist attraction. Ongoing construction and development. Popular for photo shoots, pre-wedding shoots, and events.',
+      visitorInfo: 'Open daily 6:00 AM to 11:00 PM. Entrance fee: ₱50. About 30-45 minutes from downtown Cebu City (take Transcentral Highway). Best visited late afternoon for sunset views. Restaurant on-site. Parking available. Dress code: decent attire required.'
+    },
+    
+    culturalPractices: [
+      'Modern monument culture',
+      'Wedding photography',
+      'Cultural tourism',
+      'Art appreciation'
+    ],
+    
+    nativeFloraFauna: [
+      'Landscaped gardens',
+      'Ornamental plants',
+      'Mountain vegetation',
+      'City viewpoint flora'
+    ],
+    
+    preservation: 'Privately owned and maintained by the Adarna family'
   },
-  
-  culturalPractices: [
-    'Volcano worship traditions',
-    'Local handicrafts using volcanic materials',
-    'Disaster preparedness rituals',
-    'Cultural festivals (Magayon Festival)'
-  ],
-  
-  nativeFloraFauna: [
-    'Mayon shrew (endemic)',
-    'Volcanic soil adapted plants',
-    'Forest bird species',
-    'Unique fern varieties'
-  ],
-  
-  preservation: 'Managed by DENR and PHIVOLCS'
-},
-{
-  id: 13,
-  name: 'Taal Volcano',
-  location: 'Batangas, CALABARZON',
-  lat: 14.0100,
-  lng: 120.9975,
-  image: 'src/image/taal.jpeg',
-  description: 'Volcano within a lake within a volcano.',
-  category: 'Natural Heritage',
-  heritageStatus: 'Protected Landscape',
-  era: 'Active volcano',
-  region: 'CALABARZON',
-  established: 'Natural formation',
-  builtBy: 'Volcanic activity',
-  
-  detailedInfo: {
-    overview: 'Taal Volcano is a complex volcano located on an island within Taal Lake, which itself fills a volcanic caldera. It is the second most active volcano in the Philippines with 34 recorded eruptions.',
-    culturalSignificance: 'Important to Tagalog folklore and history. Site of historic eruptions that shaped local communities.',
-    biodiversity: 'Unique lake ecosystem with freshwater sardines (tawilis) found only in Taal Lake. Volcanic island flora and fauna.',
-    currentStatus: 'Permanent danger zone declared after 2020 eruption. Limited tourism allowed.',
-    visitorInfo: 'Currently restricted access. Best viewed from Tagaytay ridge. Boat tours suspended during high alert.'
+  {
+    id: 14,
+    name: 'Tops Lookout',
+    location: 'Busay, Cebu City',
+    lat: 10.3594,
+    lng: 123.9594,
+    image: 'src/image/tops.webp',
+    description: 'Popular viewing deck offering stunning panoramic views of Cebu City and surrounding islands.',
+    category: 'Natural Heritage',
+    heritageStatus: 'Tourism Viewpoint',
+    era: 'Developed viewing area',
+    region: 'Central Visayas',
+    established: 'Developed as tourist spot',
+    builtBy: 'Cebu City Government',
+    
+    detailedInfo: {
+      overview: 'Tops Lookout, located at approximately 2,000 feet above sea level in the Busay hills, is one of Cebu City\'s most iconic viewpoints. It offers breathtaking 360-degree panoramic views of Metro Cebu, Mactan Island, Bohol (on clear days), and the surrounding mountain ranges. The viewing deck is especially popular for watching sunrises, sunsets, and the glittering city lights at night.',
+      culturalSignificance: 'Traditional date spot and family outing destination for Cebuanos. Has been a beloved local landmark for decades. Represents Cebuanos\' love for mountain retreats and scenic views. Popular for celebrations, proposals, and special occasions.',
+      biodiversity: 'Cool mountain climate with pine trees and mountain vegetation. The area serves as a transition zone between urban and mountain forest ecosystems. Birdwatching opportunities. Fresh mountain air.',
+      currentStatus: 'Well-maintained tourist viewing area with gazebos, benches, food stalls, and parking. Popular throughout the day but especially at night. Can get crowded on weekends and holidays.',
+      visitorInfo: 'Open 24/7. Entrance fee: ₱100 per person. About 30-45 minutes from downtown Cebu City via Transcentral Highway. Best visited late afternoon for sunset or evening for city lights. Temperature cooler than lowlands, bring light jacket. Food and drinks available from vendors. Photography popular. Parking available.'
+    },
+    
+    culturalPractices: [
+      'Romantic date culture',
+      'Family bonding traditions',
+      'Night view appreciation',
+      'Photography tourism'
+    ],
+    
+    nativeFloraFauna: [
+      'Pine trees',
+      'Mountain vegetation',
+      'Highland grasses',
+      'Mountain birds',
+      'Cool climate flora'
+    ],
+    
+    preservation: 'Managed by Cebu City Government and private operators'
   },
-  
-  culturalPractices: [
-    'Lakeside fishing traditions',
-    'Volcano monitoring rituals',
-    'Local cuisine using tawilis',
-    'Environmental conservation'
-  ],
-  
-  nativeFloraFauna: [
-    'Taal Lake sardine (tawilis)',
-    'Volcano island vegetation',
-    'Water birds',
-    'Endemic fish species'
-  ],
-  
-  preservation: 'Managed by DENR and PHIVOLCS'
-},
-{
-  id: 14,
-  name: 'Sagada Hanging Coffins',
-  location: 'Sagada, Mountain Province',
-  lat: 17.0833,
-  lng: 120.9000,
-  image: 'src/image/sagada.jpg', 
-  description: 'Ancient burial practice of hanging coffins on limestone cliffs.',
-  category: 'Cultural Heritage',
-  heritageStatus: 'Cultural Heritage Site',
-  era: 'Pre-colonial to present',
-  region: 'Cordillera Administrative Region',
-  established: 'Centuries-old tradition',
-  builtBy: 'Indigenous Igorot people',
-  
-  detailedInfo: {
-    overview: 'The hanging coffins of Sagada are a traditional burial practice of the Igorot people. Coffins are placed in caves or hung on cliffs to bring the deceased closer to ancestral spirits. Some coffins are over 500 years old.',
-    culturalSignificance: 'Represents indigenous beliefs about the afterlife and connection to nature. The practice continues today among some families.',
-    architecture: 'Coffins carved from hollowed logs. Bodies placed in fetal position representing return to mother earth. Personal items buried with deceased.',
-    currentStatus: 'Living tradition with ongoing burials. Major tourist attraction requiring cultural sensitivity.',
-    visitorInfo: 'Requires local guide. Photography restrictions apply. Respectful behavior mandatory.'
+  {
+    id: 15,
+    name: 'Carbon Market',
+    location: 'Carbon, Cebu City',
+    lat: 10.2931,
+    lng: 123.9014,
+    image: 'src/image/carbon-market.jpg',
+    description: 'Historic and largest public market in Cebu, showcasing local trade and culture since 1900s.',
+    category: 'Cultural Heritage',
+    heritageStatus: 'Heritage Market',
+    era: 'Established early 1900s',
+    region: 'Central Visayas',
+    established: 'Early 20th century',
+    builtBy: 'Cebu City Government',
+    
+    detailedInfo: {
+      overview: 'Carbon Market (officially Cebu Carbon Public Market) is Cebu\'s oldest and largest farmers\' market, operating since the early 1900s. Named after the coal (carbon) storage facility that once stood there during Spanish times. The sprawling market covers several blocks and operates day and night, selling everything from fresh produce, seafood, meat, flowers, to dry goods, handicrafts, and street food. It\'s divided into wet market, dry goods section, and night market areas.',
+      culturalSignificance: 'Represents the heart of Cebuano commerce and daily life. A cultural institution where generations of Cebuanos have shopped for decades. Showcases authentic Filipino market culture, bargaining traditions, and local food systems. Important for understanding working-class Cebuano life.',
+      architecture: 'Mix of old and new structures. Original pre-war buildings exist alongside modern additions. Covered sections with metal roofing. Narrow passageways and stalls create labyrinthine market atmosphere. Currently undergoing modernization while preserving heritage character.',
+      currentStatus: 'Fully operational 24/7 with peak activity early morning. Modernization project ongoing to improve sanitation and infrastructure while maintaining market character. Remains vital economic hub for vendors and shoppers.',
+      visitorInfo: 'Open 24/7 but best visited 4:00 AM to 9:00 AM for freshest products. Night market operates 6:00 PM onwards. Free entry. Bring cash (no cards). Watch belongings. Bargaining expected. Try local street food. Pungko-pungko (street food stalls) famous. Cultural experience, not tourist attraction. Nearby is Taboan for dried fish (pasalubong).'
+    },
+    
+    culturalPractices: [
+      'Traditional market trade',
+      'Bargaining culture',
+      'Street food culture (pungko-pungko)',
+      'Local commerce traditions',
+      'Dawn market rituals'
+    ],
+    
+    nativeFloraFauna: [
+      'Fresh local produce varieties',
+      'Native fruits and vegetables',
+      'Local flowers',
+      'Fresh seafood species',
+      'Traditional herbs'
+    ],
+    
+    preservation: 'Managed by Cebu City Government with ongoing heritage-sensitive modernization'
   },
-  
-  culturalPractices: [
-    'Traditional burial rituals',
-    'Ancestor veneration',
-    'Community death rites',
-    'Cultural preservation efforts'
-  ],
-  
-  nativeFloraFauna: [
-    'Limestone cave ecosystems',
-    'Mountain forest species',
-    'Local agricultural crops',
-    'Traditional medicinal plants'
-  ],
-  
-  preservation: 'Managed by Sagada elders and local government'
-},
-{
-  id: 15,
-  name: 'Siargao Island',
-  location: 'Surigao del Norte, Caraga',
-  lat: 9.9053,
-  lng: 126.0522,
-  image: 'src/image/siargao.jpg',
-  description: 'Surfing capital with pristine beaches and mangrove forests.',
-  category: 'Natural Heritage',
-  heritageStatus: 'Protected Landscape and Seascape',
-  era: 'Natural formation',
-  region: 'Caraga Region',
-  established: 'Natural formation',
-  builtBy: 'Natural geological processes',
-  
-  detailedInfo: {
-    overview: 'Siargao is known as the "Surfing Capital of the Philippines" with Cloud 9 being its most famous surf break. The island features pristine beaches, mangrove forests, and the Sohoton Cove National Park.',
-    culturalSignificance: 'Home to the Surigaonon people. Known for laid-back island culture and surfing community.',
-    biodiversity: 'Rich marine biodiversity including dugongs, sea turtles, and diverse coral reefs. Extensive mangrove ecosystems.',
-    currentStatus: 'Rapid tourism development. Environmental protection efforts ongoing.',
-    visitorInfo: 'Best surf season August to November. Island hopping tours available. Respect local community guidelines.'
+  // ADD DESTINATIONS FROM DESTINATIONS.JSX (16-30)
+  { 
+    id: 16, 
+    name: 'Sto. Niño de Cebu Parish (Simala Shrine)', 
+    location: 'Sibonga, Cebu', 
+    category: 'Historical Heritage',
+    lat: 10.0167,
+    lng: 123.4500,
+    image: 'src/image/simala.jpg', 
+    description: 'A grand castle-like church known for miraculous answered prayers, attracting thousands of pilgrims.',
+    heritageStatus: 'Religious Pilgrimage Site',
+    era: 'Modern (1998)',
+    region: 'Central Visayas',
+    established: '1998',
+    builtBy: 'Marian Monks of the Lindogon Community',
+    
+    detailedInfo: {
+      overview: 'The Monastery of the Holy Eucharist, popularly known as Simala Shrine or Simala Church, is a castle-like structure that has become one of the most visited pilgrimage sites in Cebu. The shrine is dedicated to the Blessed Virgin Mary and is famous for the many testimonies of answered prayers and miracles attributed to Mama Mary.',
+      culturalSignificance: 'Has become a symbol of faith for many Filipino Catholics. The shrine represents modern Filipino devotion and the blend of European architectural inspiration with local spirituality. Thousands of devotees visit weekly, especially on Sundays and feast days.',
+      architecture: 'European castle-inspired architecture with towering spires, ornate details, and grand staircases. The main church features beautiful stained glass windows, detailed religious statues, and a miraculous image of Mama Mary. The complex includes gardens, grottos, and stations of the cross.',
+      currentStatus: 'Active pilgrimage site with daily masses. Continuously expanding with new structures and improvements. Managed by Marian monks who maintain the shrine and welcome pilgrims.',
+      visitorInfo: 'Open daily 4:00 AM to 7:00 PM. Free admission. About 2 hours from Cebu City. Modest dress required. Best visited on weekdays to avoid crowds. Masses held multiple times daily. Candles and prayer materials available for purchase.'
+    },
+    
+    culturalPractices: [
+      'Pilgrimage traditions',
+      'Prayer and thanksgiving rituals',
+      'Candle lighting ceremonies',
+      'Devotion to Mama Mary'
+    ],
+    
+    nativeFloraFauna: [
+      'Garden ornamental plants',
+      'Palm trees',
+      'Flowering shrubs',
+      'Mountain birds'
+    ],
+    
+    preservation: 'Managed by the Marian Monks of the Lindogon Community'
   },
-  
-  culturalPractices: [
-    'Surf culture and competitions',
-    'Traditional fishing methods',
-    'Mangrove conservation',
-    'Island festivals'
-  ],
-  
-  nativeFloraFauna: [
-    'Philippine crocodile (estuarine)',
-    'Dugongs',
-    'Sea turtles',
-    'Colorful reef fish',
-    'Mangrove species'
-  ],
-  
-  preservation: 'Managed by DENR and local communities'
-}
-
+  { 
+    id: 17, 
+    name: 'Alegre Beach & Guitnang Bato Falls', 
+    location: 'Alegre, Cebu', 
+    category: 'Natural Heritage',
+    lat: 10.2500,
+    lng: 123.7167,
+    image: 'src/image/alegre-beach.jpg', 
+    description: 'Hidden gem combining pristine beach coves and refreshing mountain waterfalls in one location.',
+    heritageStatus: 'Natural Landmark',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Natural formation',
+    builtBy: 'Natural geological and coastal processes',
+    
+    detailedInfo: {
+      overview: 'Alegre in northern Cebu offers a unique combination of coastal and mountain attractions. The area features secluded beach coves with crystal clear waters and nearby Guitnang Bato Falls, a beautiful waterfall cascading down limestone cliffs. Less commercialized than other Cebu destinations, it maintains its natural charm.',
+      culturalSignificance: 'Represents the unspoiled beauty of rural Cebu. Important to local fishing communities who have preserved these natural resources. Growing eco-tourism destination showing sustainable tourism development.',
+      biodiversity: 'Rich marine life in coastal areas including coral gardens and diverse fish species. The waterfall area supports tropical forest vegetation, freshwater ecosystems, and various bird species. Limestone formations create unique microhabitats.',
+      currentStatus: 'Emerging eco-tourism destination. Basic community-managed facilities. Efforts to develop tourism while preserving natural environment. Popular among local and adventurous foreign tourists.',
+      visitorInfo: 'Open daily, best visited during dry season. Minimal entrance fees managed by local community. 2.5 hours from Cebu City. Basic cottages available. Bring own food and water. Snorkeling gear recommended. Guided tours to waterfalls available from locals.'
+    },
+    
+    culturalPractices: [
+      'Community-based tourism',
+      'Traditional fishing methods',
+      'Environmental stewardship',
+      'Local guide services'
+    ],
+    
+    nativeFloraFauna: [
+      'Coastal mangroves',
+      'Coral reefs',
+      'Tropical fish species',
+      'Limestone forest vegetation',
+      'Freshwater species'
+    ],
+    
+    preservation: 'Managed by local barangay government and community organizations'
+  },
+  { 
+    id: 18, 
+    name: 'Cebu Taoist Temple', 
+    location: 'Beverly Hills, Cebu City', 
+    category: 'Cultural Heritage',
+    lat: 10.3333,
+    lng: 123.8833,
+    image: 'src/image/taoist.jpg', 
+    description: 'Stunning Chinese temple built by Cebu\'s Chinese community, offering panoramic city views and cultural insights.',
+    heritageStatus: 'Religious and Cultural Landmark',
+    era: 'Modern (1972)',
+    region: 'Central Visayas',
+    established: '1972',
+    builtBy: 'Cebu Chinese community',
+    
+    detailedInfo: {
+      overview: 'The Cebu Taoist Temple is located 300 meters above sea level in the Beverly Hills subdivision of Cebu City. Built by the city\'s substantial Chinese community in 1972, the temple is a center for worship for Taoism, the religion which follows the teachings of the ancient Chinese philosopher, Laozi.',
+      culturalSignificance: 'Represents the rich Chinese-Filipino heritage in Cebu. The temple serves as both a place of worship and a tourist attraction, showcasing Chinese architectural traditions and Taoist philosophy. Important cultural bridge between Chinese and Filipino communities.',
+      architecture: 'Multi-tiered temple featuring traditional Chinese architecture with ornate dragons, colorful pagoda roofs, intricate carvings, and decorative details. Features include the chapel, library, souvenir shop, and wishing well. The ascent involves climbing 81 steps (a lucky number in Chinese culture) representing the 81 chapters of Taoism scriptures.',
+      currentStatus: 'Active place of worship and major tourist attraction. Well-maintained by the Chinese community. Open to visitors of all faiths. Regular Taoist ceremonies and celebrations held throughout the year.',
+      visitorInfo: 'Open Wednesday to Sunday, 6:00 AM to 6:00 PM. Free admission. Modest attire required (no sleeveless, shorts, or mini skirts). About 30 minutes from downtown Cebu City. Best visited in the morning for cooler temperature and clear views. Photography allowed. Fortune telling services available.'
+    },
+    
+    culturalPractices: [
+      'Taoist worship rituals',
+      'Fortune telling traditions',
+      'Chinese festivals (Chinese New Year)',
+      'Meditation practices'
+    ],
+    
+    nativeFloraFauna: [
+      'Temple garden plants',
+      'Ornamental Chinese plants',
+      'Bonsai trees',
+      'Decorative flora'
+    ],
+    
+    preservation: 'Maintained by Cebu Chinese community and temple management'
+  },
+  { 
+    id: 19, 
+    name: 'Inambakan Falls', 
+    location: 'Ginatilan, Cebu', 
+    category: 'Natural Heritage',
+    lat: 9.6000,
+    lng: 123.3500,
+    image: 'src/image/inambakan.jpg', 
+    description: 'Multi-tiered waterfalls with natural pools perfect for swimming, surrounded by lush forest.',
+    heritageStatus: 'Natural Landmark',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Natural formation',
+    builtBy: 'Natural hydrological processes',
+    
+    detailedInfo: {
+      overview: 'Inambakan Falls is a stunning multi-tiered waterfall system located in the southern town of Ginatilan. The falls cascade down several levels creating natural swimming pools at each tier. The main waterfall is about 60 feet high and is surrounded by lush tropical vegetation, making it a refreshing natural retreat.',
+      culturalSignificance: 'Popular destination for locals, especially during summer months. Represents southern Cebu\'s natural attractions. The site has helped boost eco-tourism in Ginatilan, providing livelihood opportunities for local communities through guiding services and small businesses.',
+      biodiversity: 'Rich tropical forest ecosystem surrounds the falls. Home to various plant species including ferns, mosses, and native trees. The river system supports freshwater fish and crustaceans. Birds and butterflies frequent the area. The continuous flow maintains a healthy aquatic ecosystem.',
+      currentStatus: 'Managed by local barangay as eco-tourism site. Basic facilities including changing rooms and cottages. Ongoing environmental conservation efforts. Growing in popularity but still relatively uncrowded compared to other Cebu waterfalls.',
+      visitorInfo: 'Open daily 6:00 AM to 5:00 PM. Entrance fee: ₱30. 4 hours from Cebu City (south). 15-minute walk from entrance to falls. Life jackets available for rent. Cottages for day use (₱100-200). Best visited during dry season (March-May). Bring own food and drinks. Habal-habal transport available from town.'
+    },
+    
+    culturalPractices: [
+      'Community-based tourism',
+      'Local guide services',
+      'Environmental conservation',
+      'Summer recreation traditions'
+    ],
+    
+    nativeFloraFauna: [
+      'Tropical forest trees',
+      'Freshwater fish',
+      'Native ferns and mosses',
+      'Forest birds and butterflies',
+      'River crustaceans'
+    ],
+    
+    preservation: 'Managed by Ginatilan Municipal Tourism Office and local barangay'
+  },
+  { 
+    id: 20, 
+    name: 'Cebu Provincial Capitol', 
+    location: 'Cebu City, Cebu', 
+    category: 'Historical Heritage',
+    lat: 10.3156,
+    lng: 123.8901,
+    image: 'src/image/cebucapitol.jpg', 
+    description: 'Iconic government building with neoclassical architecture, symbolizing Cebu\'s political heritage.',
+    heritageStatus: 'National Historical Landmark',
+    era: 'American Colonial (1937)',
+    region: 'Central Visayas',
+    established: '1937',
+    builtBy: 'Designed by Juan Arellano',
+    
+    detailedInfo: {
+      overview: 'The Cebu Provincial Capitol is the seat of the provincial government of Cebu. Designed by renowned Filipino architect Juan Arellano and completed in 1937, it stands as one of the finest examples of neoclassical architecture in the Philippines. The building has been a witness to significant events in Cebu\'s political history.',
+      culturalSignificance: 'Symbol of Cebu\'s governance and political heritage. The capitol has hosted countless historical events and political gatherings. Its architecture represents the American colonial period\'s influence on Philippine public buildings. The structure embodies Cebuano pride and identity.',
+      architecture: 'Neoclassical design with prominent columns, symmetrical façade, and grand central dome. The building features marble interiors, detailed woodwork, and impressive halls. The capitol grounds include beautiful gardens, monuments, and the iconic Cebu seal emblem. The main building is flanked by wings housing various provincial offices.',
+      currentStatus: 'Active government building serving as office of the Governor and provincial offices. The grounds are open to the public and serve as a popular gathering place for events, celebrations, and protests. Well-maintained with ongoing preservation efforts.',
+      visitorInfo: 'Building exterior and grounds open daily. Interior access during office hours (Monday-Friday, 8:00 AM-5:00 PM). Free admission. Located along Osmeña Boulevard. Popular spot for photography, especially at sunset. Events and festivals often held on the grounds. Parking available.'
+    },
+    
+    culturalPractices: [
+      'Government ceremonies',
+      'Political rallies and protests',
+      'Cultural celebrations',
+      'Public gatherings and events'
+    ],
+    
+    nativeFloraFauna: [
+      'Capitol garden ornamentals',
+      'Century-old trees',
+      'Manicured lawns',
+      'Urban park birds'
+    ],
+    
+    preservation: 'Maintained by Cebu Provincial Government'
+  },
+  { 
+    id: 21, 
+    name: 'Cambuyo Falls', 
+    location: 'Alegria, Cebu', 
+    category: 'Natural Heritage',
+    lat: 9.7500,
+    lng: 123.3833,
+    image: 'src/image/cambais.jpg', 
+    description: 'Hidden cascade with emerald pools and canyon-like rock formations, perfect for adventure seekers.',
+    heritageStatus: 'Natural Landmark',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Natural formation',
+    builtBy: 'Natural geological erosion',
+    
+    detailedInfo: {
+      overview: 'Cambuyo Falls, also known as Cambais Falls, is a hidden gem in the municipality of Alegria in southwestern Cebu. The falls feature crystal-clear emerald waters flowing through canyon-like rock formations. The site includes multiple cascades and deep natural pools perfect for swimming and cliff jumping.',
+      culturalSignificance: 'Local swimming and recreation spot that has gained popularity among adventure tourists. The falls represent the pristine natural beauty of southwestern Cebu. Local communities benefit from tourism while working to preserve the natural environment.',
+      biodiversity: 'Surrounded by dense tropical forest with rich biodiversity. The canyon walls host unique plant species adapted to the moist environment. The clear waters support healthy freshwater ecosystems. Various birds, butterflies, and small mammals inhabit the surrounding forest.',
+      currentStatus: 'Emerging eco-tourism destination managed by local community. Basic facilities available. Growing in popularity but still maintains rustic charm. Conservation efforts in place to manage visitor impact.',
+      visitorInfo: 'Open daily 7:00 AM to 5:00 PM. Entrance fee: ₱50. About 3.5 hours from Cebu City. 20-minute trek from road to falls. Bring water shoes for slippery rocks. Cliff jumping spots available (proceed with caution). Life jackets recommended for non-swimmers. Local guides available. Best visited during dry season.'
+    },
+    
+    culturalPractices: [
+      'Adventure tourism',
+      'Cliff jumping culture',
+      'Community guiding',
+      'Environmental awareness'
+    ],
+    
+    nativeFloraFauna: [
+      'Canyon vegetation',
+      'Moss and lichen',
+      'Freshwater fish',
+      'Forest birds',
+      'Native tree species'
+    ],
+    
+    preservation: 'Managed by Alegria Municipal Tourism Office and local barangay'
+  },
+  { 
+    id: 22, 
+    name: 'University of San Carlos Museum', 
+    location: 'Talamban, Cebu City', 
+    category: 'Cultural Heritage',
+    lat: 10.3500,
+    lng: 123.9167,
+    image: 'src/image/usc-museum.jpg', 
+    description: 'Premier anthropological museum housing extensive collections of Cebuano and Visayan cultural artifacts.',
+    heritageStatus: 'University Museum',
+    era: 'Established 1967',
+    region: 'Central Visayas',
+    established: '1967',
+    builtBy: 'University of San Carlos',
+    
+    detailedInfo: {
+      overview: 'The University of San Carlos Museum is one of the oldest and most comprehensive museums in Cebu. It houses extensive collections in natural history, anthropology, and cultural heritage of Cebu and the Visayas. The museum features pre-colonial artifacts, Spanish colonial religious art, ethnographic materials, and natural specimens.',
+      culturalSignificance: 'Serves as an important repository of Cebuano and Visayan cultural heritage. The museum plays a crucial role in education, research, and cultural preservation. It documents the rich history and diverse cultures of the region from pre-colonial times to the present.',
+      architecture: 'Purpose-built museum building with climate-controlled galleries. Modern museum facilities designed to properly preserve and display artifacts. Multiple exhibition halls organized by theme and period. Research facilities and archives for scholars.',
+      currentStatus: 'Active university museum open to the public. Regularly updated exhibitions. Used for educational programs and research. Well-maintained collections with ongoing acquisition and preservation work.',
+      visitorInfo: 'Open Tuesday to Saturday, 9:00 AM to 12:00 PM and 2:00 PM to 5:00 PM. Entrance fee: ₱50 for adults, ₱30 for students. Located at USC Talamban Campus. Guided tours available for groups (advance booking required). Photography restrictions in some areas. Educational programs for schools available.'
+    },
+    
+    culturalPractices: [
+      'Cultural education',
+      'Research and documentation',
+      'Heritage preservation',
+      'Academic exhibitions'
+    ],
+    
+    nativeFloraFauna: [
+      'Museum botanical specimens',
+      'Preserved native species',
+      'Natural history collections',
+      'Ethnobotanical samples'
+    ],
+    
+    preservation: 'Managed by University of San Carlos'
+  },
+  { 
+    id: 23, 
+    name: 'Sumilon Island', 
+    location: 'Oslob, Cebu', 
+    category: 'Natural Heritage',
+    lat: 9.4333,
+    lng: 123.3833,
+    image: 'src/image/sumilon.jpg', 
+    description: 'Pristine island with shifting sandbars, marine sanctuary, and crystal-clear lagoons.',
+    heritageStatus: 'Marine Sanctuary',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'First marine sanctuary in the Philippines (1974)',
+    builtBy: 'Natural coral and sand formation',
+    
+    detailedInfo: {
+      overview: 'Sumilon Island is a small, pristine island located off the coast of Oslob. It holds the distinction of being the site of the first marine sanctuary in the Philippines, established in 1974. The island is famous for its constantly shifting white sandbar, crystal-clear waters, and vibrant marine life. The island features a beautiful lagoon, coral reefs, and a marine sanctuary.',
+      culturalSignificance: 'Pioneer in marine conservation in the Philippines. The success of Sumilon\'s marine sanctuary inspired the establishment of marine protected areas throughout the country. Represents Filipino commitment to environmental conservation and sustainable tourism.',
+      biodiversity: 'Extremely rich marine biodiversity with healthy coral reefs. Marine sanctuary protects various coral species, tropical fish, sea turtles, and other marine life. The island itself has native coastal vegetation. Bird species use the island as resting point during migration. The shifting sandbar is a unique geological feature.',
+      currentStatus: 'Protected marine sanctuary with regulated tourism. Day-trip destination and resort island. Strict environmental rules enforced. Marine research conducted regularly. Continuous conservation efforts by government and resort management.',
+      visitorInfo: 'Day tour packages available (₱800-1,500). Resort accommodation available for overnight stays. 3.5 hours from Cebu City, boat transfer from Oslob (15 minutes). Snorkeling gear included in packages. Best visited March to June. Marine sanctuary fee applies. Register at tourism office in Oslob. Can be combined with whale shark watching.'
+    },
+    
+    culturalPractices: [
+      'Marine conservation',
+      'Sustainable diving and snorkeling',
+      'Environmental education',
+      'Eco-resort tourism'
+    ],
+    
+    nativeFloraFauna: [
+      'Coral reefs (hard and soft)',
+      'Tropical reef fish',
+      'Sea turtles',
+      'Coastal vegetation',
+      'Migratory birds'
+    ],
+    
+    preservation: 'Managed by Oslob Municipal Government and resort operator under DENR supervision'
+  },
+  { 
+    id: 24, 
+    name: 'Colawin Protected Landscape', 
+    location: 'Argao, Cebu', 
+    category: 'Natural Heritage',
+    lat: 9.8833,
+    lng: 123.5000,
+    image: 'src/image/colawin.jpg', 
+    description: 'Mountain forest reserve with diverse wildlife, bird watching opportunities, and eco-trails.',
+    heritageStatus: 'Protected Landscape',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Declared protected area 1968',
+    builtBy: 'Natural forest ecosystem',
+    
+    detailedInfo: {
+      overview: 'Colawin Protected Landscape is a 3,000-hectare protected area in Argao, southern Cebu. It represents one of the few remaining montane forests in Cebu with relatively intact ecosystems. The area features diverse flora and fauna, pristine watersheds, and important bird habitats. It serves as a vital watershed for surrounding communities.',
+      culturalSignificance: 'Important for biodiversity conservation in Cebu. Represents efforts to preserve remaining natural forests in the province. The protected area is significant for environmental education and research. Local communities play active roles in conservation efforts.',
+      biodiversity: 'High biodiversity including endemic and endangered species. Home to various bird species including some endemic to Cebu and the Philippines. Forest supports mammals like civets, wild pigs, and flying foxes. Rich in native trees, orchids, and other plant species. Important watershed ecosystem.',
+      currentStatus: 'Active protected area with ongoing conservation programs. Limited tourism to minimize impact. Research activities permitted with proper authorization. Reforestation and habitat restoration ongoing. Community-based forest management in place.',
+      visitorInfo: 'Access requires permit from DENR and Argao Municipal Government. Guided eco-tours available through advance arrangement. About 3 hours from Cebu City. Challenging trek suitable for experienced hikers. Bring appropriate gear and supplies. Best for bird watching early morning. Camping possible with permit.'
+    },
+    
+    culturalPractices: [
+      'Forest conservation',
+      'Community forestry',
+      'Bird watching culture',
+      'Environmental education'
+    ],
+    
+    nativeFloraFauna: [
+      'Native hardwood trees',
+      'Endemic bird species',
+      'Orchids and ferns',
+      'Wild mammals',
+      'Forest biodiversity'
+    ],
+    
+    preservation: 'Managed by DENR with community participation'
+  },
+  { 
+    id: 25, 
+    name: 'Heritage of Cebu Monument', 
+    location: 'Parian, Cebu City', 
+    category: 'Cultural Heritage',
+    lat: 10.2958,
+    lng: 123.9006,
+    image: 'src/image/heritagecebu.jpg', 
+    description: 'Massive sculpture depicting key events in Cebu\'s history from pre-colonial to modern times.',
+    heritageStatus: 'Public Monument',
+    era: 'Modern (2000)',
+    region: 'Central Visayas',
+    established: '2000',
+    builtBy: 'Sculptor Eduardo Castrillo',
+    
+    detailedInfo: {
+      overview: 'The Heritage of Cebu Monument is a massive outdoor sculpture located in the Parian district near the Basilica del Santo Niño and Magellan\'s Cross. Created by national artist Eduardo Castrillo, the monument depicts significant events in Cebu\'s history through detailed sculptures and tableaus. It serves as both an artistic masterpiece and historical educational tool.',
+      culturalSignificance: 'Synthesizes over 400 years of Cebu\'s history in one artistic work. The monument celebrates Cebu\'s role in Philippine history, from Magellan\'s arrival to modern times. It has become an important landmark and gathering place, symbolizing Cebuano heritage and identity.',
+      architecture: 'Multi-level concrete sculpture featuring life-sized figures depicting historical scenes. Key moments include Magellan\'s arrival, the blood compact, Spanish colonization, religious conversion, and modern Cebu. The monument uses various sculptural techniques and incorporates religious and historical symbols. Surrounding area includes heritage walk connecting to nearby historical sites.',
+      currentStatus: 'Well-maintained public monument open 24/7. Popular tourist attraction and photography spot. Used as starting point for heritage walks. Hosts cultural events and commemorations. Illuminated at night creating dramatic effect.',
+      visitorInfo: 'Open 24 hours. Free admission. Located in Parian district, walking distance from Basilica and Magellan\'s Cross. Best visited during daytime for photography. Heritage walk tours available from local guides. Nearby parking limited. Street food vendors around the area. Combine visit with other heritage sites in walking distance.'
+    },
+    
+    culturalPractices: [
+      'Historical education',
+      'Heritage walks',
+      'Cultural celebrations',
+      'Photographic tourism'
+    ],
+    
+    nativeFloraFauna: [
+      'Urban plaza plants',
+      'Ornamental species',
+      'Heritage district trees',
+      'City birds'
+    ],
+    
+    preservation: 'Maintained by Cebu City Government'
+  },
+  { 
+    id: 26, 
+    name: 'Cuartel (Spanish Barracks)', 
+    location: 'Carcar City, Cebu', 
+    category: 'Historical Heritage',
+    lat: 10.1000,
+    lng: 123.6333,
+    image: 'src/image/cuartel.jpg', 
+    description: 'Ruins of Spanish military barracks, one of the few remaining colonial military structures in Cebu.',
+    heritageStatus: 'Heritage Structure',
+    era: 'Spanish Colonial (1870s)',
+    region: 'Central Visayas',
+    established: '1870s',
+    builtBy: 'Spanish colonial government',
+    
+    detailedInfo: {
+      overview: 'The Cuartel, or Spanish Barracks, is a historical military structure in Carcar City. Built during the late Spanish colonial period, it served as barracks for Spanish soldiers. The structure represents one of the few remaining examples of Spanish military architecture outside Metro Cebu. Though partially in ruins, significant portions remain standing.',
+      culturalSignificance: 'Represents Spanish colonial military presence in southern Cebu. The structure witnessed the transition from Spanish to American rule. Important heritage site for understanding colonial-era military operations and architecture. Symbol of Carcar\'s historical significance as a colonial outpost.',
+      architecture: 'Coral stone construction typical of Spanish colonial military buildings. Features thick walls for defense, archways, and chambers for soldiers. Original structure had two levels with guard towers. Despite deterioration, architectural details remain visible. The ruins show Spanish colonial construction techniques using local materials.',
+      currentStatus: 'Heritage ruins partially preserved. Site accessible to public but under-maintained. Local government and heritage advocates pushing for restoration and conservation. Used occasionally for cultural events and heritage tours. Subject of ongoing preservation discussions.',
+      visitorInfo: 'Accessible daily. Free admission. Located in Carcar City proper. About 1.5 hours from Cebu City. Best combined with Carcar heritage tour including churches and ancestral houses. Exercise caution around unstable structures. Carcar is also famous for chicharon (pork rinds) and lechon.'
+    },
+    
+    culturalPractices: [
+      'Heritage conservation efforts',
+      'Historical education',
+      'Cultural tours',
+      'Local history preservation'
+    ],
+    
+    nativeFloraFauna: [
+      'Heritage site vegetation',
+      'Native shrubs',
+      'Urban adaptable plants',
+      'Local birds'
+    ],
+    
+    preservation: 'Under Carcar City Government with heritage conservation groups'
+  },
+  { 
+    id: 27, 
+    name: 'Nug-as Forest', 
+    location: 'Alcoy-Dalaguete, Cebu', 
+    category: 'Natural Heritage',
+    lat: 9.7167,
+    lng: 123.4333,
+    image: 'src/image/nugas.jpg', 
+    description: 'Cool mountain forest with giant ancient trees, hanging bridges, and nature trails.',
+    heritageStatus: 'Natural Forest Reserve',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Protected forest',
+    builtBy: 'Natural forest ecosystem',
+    
+    detailedInfo: {
+      overview: 'Nug-as Forest is a mountain forest straddling the municipalities of Alcoy and Dalaguete in southern Cebu. The forest features towering ancient trees, some over 100 years old, creating a cool and refreshing atmosphere. The area has been developed for eco-tourism with hanging bridges, tree decks, and forest trails while maintaining environmental conservation.',
+      culturalSignificance: 'Represents community-led forest conservation. Local communities have protected these forests for generations, recognizing their importance for water sources and biodiversity. The eco-tourism development provides alternative livelihood while preserving the forest. Symbol of successful community environmental management.',
+      biodiversity: 'Diverse montane forest ecosystem with native tree species including giant dipterocarps. Home to various bird species, small mammals, and insects. The forest floor supports ferns, orchids, and other understory plants. Important watershed providing water for downstream communities. Microclimate supports unique plant species.',
+      currentStatus: 'Active eco-tourism site managed by local community. Well-maintained trails and facilities. Environmental rules strictly enforced. Continuous reforestation efforts. Popular among nature lovers and eco-tourists. Forest research permitted with coordination.',
+      visitorInfo: 'Open daily 7:00 AM to 5:00 PM. Entrance fee: ₱50. About 3 hours from Cebu City. Features hanging bridges and viewing decks. Guided forest walks available. Cool temperature, bring jacket. Steep trails require moderate fitness. Cottages for day use. Photography encouraged. Best visited morning or late afternoon.'
+    },
+    
+    culturalPractices: [
+      'Community forest management',
+      'Eco-tourism',
+      'Environmental education',
+      'Traditional forest practices'
+    ],
+    
+    nativeFloraFauna: [
+      'Ancient native trees',
+      'Native orchids',
+      'Forest birds',
+      'Native ferns',
+      'Endemic plant species'
+    ],
+    
+    preservation: 'Community-managed with support from Alcoy and Dalaguete LGUs'
+  },
+  { 
+    id: 28, 
+    name: 'Lantawan (Tres Reyes Islands)', 
+    location: 'Bantayan Island, Cebu', 
+    category: 'Natural Heritage',
+    lat: 11.1833,
+    lng: 123.7000,
+    image: 'src/image/lantawan.jpg', 
+    description: 'Three pristine islands with powdery white sand beaches, clear waters, and vibrant marine life.',
+    heritageStatus: 'Island Group',
+    era: 'Natural formation',
+    region: 'Central Visayas',
+    established: 'Natural islands',
+    builtBy: 'Natural coral and sand formation',
+    
+    detailedInfo: {
+      overview: 'Lantawan, also known as Tres Reyes Islands, consists of three small islands off the coast of Bantayan: Doong Island, Hilantagaan Island, and Kinatarkan Island. These islands feature pristine white-sand beaches, crystal-clear turquoise waters, and vibrant coral reefs. Less commercialized than other destinations, they offer authentic island experiences.',
+      culturalSignificance: 'Traditional fishing grounds for Bantayan islanders. The islands represent the unspoiled beauty of northern Cebu. Community-based tourism initiatives provide livelihood while preserving natural resources. Popular for island-hopping adventures, showcasing sustainable tourism practices.',
+      biodiversity: 'Rich marine ecosystems with healthy coral reefs. Abundant fish species, some endemic to the region. Sea turtles occasionally visit the area. Seagrass beds support marine biodiversity. Islands have coastal vegetation including coconut palms and native shrubs. Important habitat for coastal and marine species.',
+      currentStatus: 'Active island-hopping destinations. Managed by local communities. Basic facilities available on some islands. Growing tourism managed sustainably. Environmental conservation efforts ongoing. Some areas designated as fish sanctuaries.',
+      visitorInfo: 'Access via island-hopping tours from Bantayan (₱1,500-2,500 for group). Tours typically visit 2-3 islands. Best visited March to June. Snorkeling gear often included. Bring own food and drinks (limited vendors). Day tours only, no overnight stays. Environmental fees apply. Book through Bantayan tourism office or accredited operators.'
+    },
+    
+    culturalPractices: [
+      'Traditional fishing',
+      'Island-hopping culture',
+      'Community-based tourism',
+      'Marine conservation'
+    ],
+    
+    nativeFloraFauna: [
+      'Coral reefs',
+      'Tropical fish species',
+      'Coconut palms',
+      'Seagrass beds',
+      'Coastal birds'
+    ],
+    
+    preservation: 'Community-managed with Bantayan Municipal Government oversight'
+  },
+  { 
+    id: 29, 
+    name: 'Cebu Metropolitan Cathedral', 
+    location: 'Cebu City, Cebu', 
+    category: 'Historical Heritage',
+    lat: 10.2952,
+    lng: 123.9022,
+    image: 'src/image/cathedral.webp', 
+    description: 'The ecclesiastical seat of the Archdiocese of Cebu, featuring colonial architecture and religious heritage.',
+    heritageStatus: 'Metropolitan Cathedral',
+    era: 'Spanish Colonial (1689, rebuilt 1835)',
+    region: 'Central Visayas',
+    established: 'Original 1689, current structure 1835',
+    builtBy: 'Catholic Church/Archdiocese of Cebu',
+    
+    detailedInfo: {
+      overview: 'The Metropolitan Cathedral of Cebu, officially the Metropolitan Cathedral and Parish of St. Vitales, is the ecclesiastical seat of the Metropolitan Archdiocese of Cebu. The cathedral has a long history dating back to 1689, though the current structure was completed in 1835. It stands as one of the oldest cathedrals in the Philippines and witnessed significant events in Cebu\'s religious history.',
+      culturalSignificance: 'Serves as the mother church of the Archdiocese of Cebu, one of the oldest dioceses in Asia. The cathedral represents the establishment and growth of Catholicism in the Philippines. Important venue for significant religious ceremonies and celebrations. Symbol of Cebuano Catholic faith and heritage.',
+      architecture: 'Spanish colonial architecture with baroque influences. Features coral stone construction, thick walls, religious artwork, and stained glass windows. The cathedral underwent several renovations maintaining its historical character while improving structural integrity. Interior features ornate altars, religious statues, and historical artifacts.',
+      currentStatus: 'Active cathedral with regular masses and religious ceremonies. Seat of the Archbishop of Cebu. Pilgrimage site for Catholics. Well-maintained through ongoing preservation efforts. Major venue for important religious celebrations including Sinulog religious activities.',
+      visitorInfo: 'Open daily for mass and prayer. Free admission. Modest dress required. Mass schedules: Multiple times daily (check cathedral for current schedule). Located in downtown Cebu City. Walking distance from Basilica del Santo Niño. Museum and treasury visits by arrangement. Photography allowed but respectful behavior required.'
+    },
+    
+    culturalPractices: [
+      'Catholic masses and ceremonies',
+      'Religious pilgrimages',
+      'Sinulog religious activities',
+      'Weddings and baptisms'
+    ],
+    
+    nativeFloraFauna: [
+      'Cathedral garden plants',
+      'Heritage trees',
+      'Ornamental flora',
+      'Urban birds'
+    ],
+    
+    preservation: 'Maintained by Archdiocese of Cebu'
+  },
+  { 
+    id: 30, 
+    name: 'Buwakan ni Alejandra', 
+    location: 'Balamban, Cebu', 
+    category: 'Cultural Heritage',
+    lat: 10.4833,
+    lng: 123.7167,
+    image: 'src/image/buwakan.jpg', 
+    description: 'Sprawling flower and vegetable farm featuring themed gardens, mountain views, and local produce.',
+    heritageStatus: 'Agri-Tourism Site',
+    era: 'Modern (2016)',
+    region: 'Central Visayas',
+    established: '2016',
+    builtBy: 'Local agricultural entrepreneurs',
+    
+    detailedInfo: {
+      overview: 'Buwakan ni Alejandra is a vast flower and vegetable farm located in the mountains of Balamban, western Cebu. The 7-hectare farm features themed gardens including flower gardens, vegetable patches, and ornamental plant sections. The site offers panoramic mountain views and promotes agri-tourism, organic farming, and environmental awareness.',
+      culturalSignificance: 'Represents the growing agri-tourism trend in Cebu. Showcases local agricultural practices and sustainable farming. The farm provides educational opportunities about farming and environmental stewardship. Important for rural economic development through tourism diversification.',
+      biodiversity: 'Cultivated flower varieties including sunflowers, zinnias, and ornamental species. Organic vegetable production supports pollinators. The mountain location provides cool climate for temperate plants. Surrounding area retains some native mountain vegetation. Farm practices support soil health and biodiversity.',
+      currentStatus: 'Active agri-tourism destination. Continuously developing new garden sections and attractions. Popular for family outings, team building, and photography. Farm-to-table restaurant on-site. Hosts events and festivals. Educational farm tours available.',
+      visitorInfo: 'Open daily 7:00 AM to 6:00 PM. Entrance fee: ₱100-150. About 1.5-2 hours from Cebu City. Cool mountain temperature, bring light jacket. Restaurant serves organic vegetables grown on-site. Fresh produce available for purchase. Best visited during flower season. Photo spots throughout the farm. Parking available.'
+    },
+    
+    culturalPractices: [
+      'Agri-tourism',
+      'Organic farming practices',
+      'Environmental education',
+      'Farm-to-table dining'
+    ],
+    
+    nativeFloraFauna: [
+      'Sunflowers',
+      'Ornamental flowers',
+      'Organic vegetables',
+      'Pollinators (bees, butterflies)',
+      'Mountain vegetation'
+    ],
+    
+    preservation: 'Privately owned and maintained'
+  }
 ];
-
 
 function FlyTo({ lat, lng, zoom = 13 }) {
   const map = useMap();
@@ -613,7 +1209,6 @@ function FlyTo({ lat, lng, zoom = 13 }) {
 }
 
 export default function Explore() {
-  const [navbarHeight, setNavbarHeight] = useState(70);
   const [selected, setSelected] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -621,17 +1216,38 @@ export default function Explore() {
   const [showDetailedInfo, setShowDetailedInfo] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const navbar = document.querySelector('nav');
-      if (navbar) setNavbarHeight(navbar.offsetHeight);
-    }, 50);
-    
+    // Fix Leaflet marker icons
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    });
+
     // Check if there's a destination saved from Destinations page
     const savedDest = localStorage.getItem('selectedDestination');
     if (savedDest) {
       try {
         const destination = JSON.parse(savedDest);
-        setSelected(destination);
+        
+        // Check if this destination exists in our cebuSites array
+        const existingDest = cebuSites.find(site => site.id === destination.id);
+        
+        if (existingDest) {
+          // Use the destination from our local data
+          setSelected(existingDest);
+        } else {
+          // If it's a new destination from Destinations page, add it to the map
+          // Ensure it has all required properties
+          const newDest = {
+            ...destination,
+            id: destination.id || Math.max(...cebuSites.map(s => s.id)) + 1,
+            zoom: 13,
+            category: destination.category || 'Cultural Heritage'
+          };
+          setSelected(newDest);
+        }
+        
         setAutoZoom(true);
         localStorage.removeItem('selectedDestination');
       } catch (error) {
@@ -639,23 +1255,14 @@ export default function Explore() {
         localStorage.removeItem('selectedDestination');
       }
     }
-    
-    return () => clearInterval(interval);
-  }, []);
-
-  // Fix Leaflet marker icons
-  useEffect(() => {
-    delete L.Icon.Default.prototype._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    });
   }, []);
 
   const categories = ['All', 'Cultural Heritage', 'Historical Heritage', 'Natural Heritage'];
 
-  const filteredSites = heritageSites.filter(site => {
+  // Combine sites from local array with any dynamically added sites
+  const allSites = [...cebuSites];
+  
+  const filteredSites = allSites.filter(site => {
     const matchesSearch = site.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          site.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          site.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -669,29 +1276,18 @@ export default function Explore() {
     setShowDetailedInfo(false);
   };
 
-  const getCategoryColor = (category) => {
-    switch(category) {
-      case 'Cultural Heritage': return 'bg-yellow-100 text-yellow-800';
-      case 'Historical Heritage': return 'bg-blue-100 text-blue-800';
-      case 'Natural Heritage': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   return (
     <div style={{ 
-      paddingTop: `${navbarHeight}px`,
-      height: '100vh',
+      height: 'calc(100vh - 100px)',
       display: 'flex',
-      background: 'linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%)',
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* LEFT SIDEBAR */}
+      {/* LEFT SIDEBAR - Updated to match Home theme */}
       <div 
         style={{ 
-          width: '380px',
-          background: 'linear-gradient(135deg, rgba(30, 58, 95, 0.97) 0%, rgba(44, 82, 130, 0.95) 100%)',
+          width: '400px',
+          background: 'linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%)',
           backdropFilter: 'blur(20px)',
           overflowY: 'auto',
           boxShadow: '4px 0 20px rgba(0, 0, 0, 0.3)',
@@ -706,11 +1302,12 @@ export default function Explore() {
             <div style={{
               width: '50px',
               height: '50px',
-              background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+              background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
             }}>
               <Globe size={24} color="white" />
             </div>
@@ -721,14 +1318,14 @@ export default function Explore() {
                 fontWeight: 'bold',
                 margin: 0
               }}>
-                Maharlika Heritage
+                SugboSphere
               </h2>
               <p style={{ 
                 color: 'rgba(255, 255, 255, 0.7)', 
                 fontSize: '0.85rem',
                 margin: 0
               }}>
-                Philippine Cultural & Natural Heritage Map
+                Explore Cebu's Heritage & Natural Wonders
               </p>
             </div>
           </div>
@@ -738,7 +1335,7 @@ export default function Explore() {
             <input
               type="text"
               className="form-control"
-              placeholder="Search heritage sites..."
+              placeholder="Search Cebu destinations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -771,16 +1368,6 @@ export default function Explore() {
                   fontSize: '0.8rem',
                   transition: 'all 0.3s'
                 }}
-                onMouseEnter={(e) => {
-                  if (selectedCategory !== (cat === 'All' ? 'all' : cat)) {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (selectedCategory !== (cat === 'All' ? 'all' : cat)) {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                  }
-                }}
               >
                 {cat}
               </button>
@@ -788,106 +1375,140 @@ export default function Explore() {
           </div>
         </div>
 
-        {/* Sites List */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '15px' }}>
-          {filteredSites.map((site, index) => (
+        {/* Sites List - Just Images and Names */}
+        <div style={{ 
+          flex: 1, 
+          overflowY: 'auto', 
+          padding: '15px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))',
+          gap: '15px'
+        }}>
+          {filteredSites.map((site) => (
             <div
               key={site.id}
               onClick={() => handleSiteClick(site)}
               style={{
                 cursor: 'pointer',
-                marginBottom: '15px',
                 borderRadius: '12px',
                 background: selected?.id === site.id 
                   ? 'rgba(59, 130, 246, 0.3)' 
-                  : 'rgba(255, 255, 255, 0.08)',
+                  : 'rgba(255, 255, 255, 0.05)',
                 border: selected?.id === site.id 
                   ? '2px solid rgba(59, 130, 246, 0.5)' 
                   : '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '15px',
-                transition: 'all 0.3s'
+                overflow: 'hidden',
+                transition: 'all 0.3s',
+                height: '200px',
+                position: 'relative'
               }}
               onMouseEnter={(e) => {
                 if (selected?.id !== site.id) {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.3)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (selected?.id !== site.id) {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }
               }}
             >
-              <div className="d-flex justify-content-between align-items-start mb-2">
-                <h6 style={{ color: 'white', margin: 0, fontSize: '0.95rem' }}>
+              {/* Site Image */}
+              <div style={{
+                height: '140px',
+                width: '100%',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <img
+                  src={site.image}
+                  alt={site.name}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    transition: 'transform 0.5s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                />
+                
+                {/* Category Badge */}
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  left: '8px',
+                  padding: '3px 10px',
+                  borderRadius: '8px',
+                  fontSize: '0.6rem',
+                  fontWeight: '600',
+                  background: site.category === 'Cultural Heritage' 
+                    ? 'rgba(245, 158, 11, 0.9)' 
+                    : site.category === 'Historical Heritage'
+                    ? 'rgba(148, 163, 184, 0.9)'
+                    : 'rgba(34, 197, 94, 0.9)',
+                  color: 'white'
+                }}>
+                  {site.category.split(' ')[0]}
+                </div>
+                
+                {/* UNESCO/Special Badge */}
+                {(site.heritageStatus && (site.heritageStatus.includes('UNESCO') || site.heritageStatus.includes('National'))) && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    padding: '3px 8px',
+                    borderRadius: '8px',
+                    fontSize: '0.6rem',
+                    fontWeight: '600',
+                    background: 'rgba(239, 68, 68, 0.9)',
+                    color: 'white'
+                  }}>
+                    {site.heritageStatus.includes('UNESCO') ? 'UNESCO' : 'Heritage'}
+                  </div>
+                )}
+              </div>
+
+              {/* Site Name */}
+              <div style={{ 
+                height: '60px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0 10px'
+              }}>
+                <h6 style={{ 
+                  color: 'white', 
+                  margin: 0, 
+                  fontSize: '0.85rem',
+                  fontWeight: '600',
+                  textAlign: 'center',
+                  lineHeight: '1.2'
+                }}>
                   {site.name}
                 </h6>
-                <span style={{
-                  fontSize: '0.7rem',
-                  padding: '2px 8px',
-                  borderRadius: '10px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  color: 'rgba(255, 255, 255, 0.7)'
-                }}>
-                  {site.heritageStatus.includes('UNESCO') ? 'UNESCO' : 'Heritage'}
-                </span>
-              </div>
-              <div className="d-flex align-items-center gap-1 mb-2">
-                <MapPin size={12} style={{ color: '#93c5fd' }} />
-                <span style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.6)' }}>
-                  {site.location}
-                </span>
-              </div>
-              <p style={{ 
-                fontSize: '0.8rem', 
-                color: 'rgba(255, 255, 255, 0.7)', 
-                margin: 0,
-                lineHeight: '1.4'
-              }}>
-                {site.description}
-              </p>
-              <div className="mt-2 d-flex justify-content-between">
-                <span style={{
-                  fontSize: '0.7rem',
-                  color: 'rgba(255, 255, 255, 0.5)'
-                }}>
-                  <Calendar size={10} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                  {site.era}
-                </span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSiteClick(site);
-                    setShowDetailedInfo(true);
-                  }}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#93c5fd',
-                    fontSize: '0.7rem',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  More info <ChevronRight size={12} />
-                </button>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* MAP CONTAINER */}
+      {/* MAP CONTAINER - FOCUSED ON CEBU */}
       <div style={{ flex: 1, position: 'relative' }}>
         <MapContainer
-          center={[12.8797, 121.774]}
-          zoom={6}
+          center={[10.3157, 123.8854]}  // Center of Cebu
+          zoom={9}  // Closer zoom for Cebu island
           style={{ height: '100%', width: '100%' }}
           maxBounds={[
-            [4, 116],
-            [21, 127]
+            [9.4, 123.1],   // Southwest corner of Cebu
+            [11.3, 124.1]   // Northeast corner of Cebu
           ]}
         >
           <TileLayer
@@ -905,7 +1526,7 @@ export default function Explore() {
             >
               <Popup>
                 <div style={{ minWidth: '200px' }}>
-                  <strong style={{ color: '#1e3a5f', fontSize: '1rem' }}>
+                  <strong style={{ color: '#3b82f6', fontSize: '1rem' }}>
                     {site.name}
                   </strong>
                   <br />
@@ -1022,24 +1643,26 @@ export default function Explore() {
                     {selected.location}
                   </span>
                 </div>
-                <h5 className="fw-bold mb-2" style={{ color: '#1e3a5f' }}>
+                <h5 className="fw-bold mb-2" style={{ color: '#0c4a6e' }}>
                   {selected.name}
                 </h5>
                 <div className="mb-3">
-                  <span style={{
-                    fontSize: '0.75rem',
-                    padding: '4px 10px',
-                    borderRadius: '12px',
-                    background: '#e0f2fe',
-                    color: '#0369a1',
-                    fontWeight: '600',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    <Award size={12} />
-                    {selected.heritageStatus}
-                  </span>
+                  {selected.heritageStatus && (
+                    <span style={{
+                      fontSize: '0.75rem',
+                      padding: '4px 10px',
+                      borderRadius: '12px',
+                      background: '#e0f2fe',
+                      color: '#0369a1',
+                      fontWeight: '600',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <Award size={12} />
+                      {selected.heritageStatus}
+                    </span>
+                  )}
                 </div>
                 <p style={{ fontSize: '0.85rem', color: '#6b7280', lineHeight: '1.5', marginBottom: '15px' }}>
                   {selected.description}
@@ -1056,7 +1679,7 @@ export default function Explore() {
                       <Calendar size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
                       Established
                     </div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: '600', color: '#1e3a5f' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: '600', color: '#0c4a6e' }}>
                       {selected.established}
                     </div>
                   </div>
@@ -1071,7 +1694,7 @@ export default function Explore() {
                       <Users size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
                       Region
                     </div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: '600', color: '#1e3a5f' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: '600', color: '#0c4a6e' }}>
                       {selected.region}
                     </div>
                   </div>
@@ -1086,15 +1709,16 @@ export default function Explore() {
                     borderRadius: '10px',
                     padding: '10px',
                     fontWeight: '600',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.5)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = 'none';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
                   }}
                 >
                   <Info size={14} />
@@ -1140,7 +1764,7 @@ export default function Explore() {
                 >
                   ← Back to Summary
                 </button>
-                <h2 className="fw-bold mb-1" style={{ color: '#1e3a5f' }}>
+                <h2 className="fw-bold mb-1" style={{ color: '#0c4a6e' }}>
                   {selected.name}
                 </h2>
                 <div className="d-flex align-items-center gap-2">
@@ -1178,43 +1802,49 @@ export default function Explore() {
               <div className="col-md-8">
                 {/* Overview */}
                 <div className="mb-4">
-                  <h4 className="h5 fw-bold mb-3" style={{ color: '#1e3a5f', borderBottom: '2px solid #e5e7eb', paddingBottom: '8px' }}>
+                  <h4 className="h5 fw-bold mb-3" style={{ color: '#0c4a6e', borderBottom: '2px solid #e5e7eb', paddingBottom: '8px' }}>
                     Overview
                   </h4>
                   <p style={{ lineHeight: '1.7', color: '#4b5563' }}>
-                    {selected.detailedInfo.overview}
+                    {selected.detailedInfo?.overview || selected.description}
                   </p>
                 </div>
 
                 {/* Cultural Significance */}
-                <div className="mb-4">
-                  <h4 className="h5 fw-bold mb-3" style={{ color: '#1e3a5f', borderBottom: '2px solid #e5e7eb', paddingBottom: '8px' }}>
-                    Cultural Significance
-                  </h4>
-                  <p style={{ lineHeight: '1.7', color: '#4b5563' }}>
-                    {selected.detailedInfo.culturalSignificance}
-                  </p>
-                </div>
+                {selected.detailedInfo?.culturalSignificance && (
+                  <div className="mb-4">
+                    <h4 className="h5 fw-bold mb-3" style={{ color: '#0c4a6e', borderBottom: '2px solid #e5e7eb', paddingBottom: '8px' }}>
+                      Cultural Significance
+                    </h4>
+                    <p style={{ lineHeight: '1.7', color: '#4b5563' }}>
+                      {selected.detailedInfo.culturalSignificance}
+                    </p>
+                  </div>
+                )}
 
                 {/* Architecture/Natural Features */}
-                <div className="mb-4">
-                  <h4 className="h5 fw-bold mb-3" style={{ color: '#1e3a5f', borderBottom: '2px solid #e5e7eb', paddingBottom: '8px' }}>
-                    {selected.category === 'Natural Heritage' ? 'Natural Features' : 'Architecture'}
-                  </h4>
-                  <p style={{ lineHeight: '1.7', color: '#4b5563' }}>
-                    {selected.detailedInfo.architecture || selected.detailedInfo.biodiversity}
-                  </p>
-                </div>
+                {(selected.detailedInfo?.architecture || selected.detailedInfo?.biodiversity) && (
+                  <div className="mb-4">
+                    <h4 className="h5 fw-bold mb-3" style={{ color: '#0c4a6e', borderBottom: '2px solid #e5e7eb', paddingBottom: '8px' }}>
+                      {selected.category === 'Natural Heritage' ? 'Natural Features' : 'Architecture'}
+                    </h4>
+                    <p style={{ lineHeight: '1.7', color: '#4b5563' }}>
+                      {selected.detailedInfo.architecture || selected.detailedInfo.biodiversity}
+                    </p>
+                  </div>
+                )}
 
                 {/* Current Status */}
-                <div className="mb-4">
-                  <h4 className="h5 fw-bold mb-3" style={{ color: '#1e3a5f', borderBottom: '2px solid #e5e7eb', paddingBottom: '8px' }}>
-                    Current Status
-                  </h4>
-                  <p style={{ lineHeight: '1.7', color: '#4b5563' }}>
-                    {selected.detailedInfo.currentStatus}
-                  </p>
-                </div>
+                {selected.detailedInfo?.currentStatus && (
+                  <div className="mb-4">
+                    <h4 className="h5 fw-bold mb-3" style={{ color: '#0c4a6e', borderBottom: '2px solid #e5e7eb', paddingBottom: '8px' }}>
+                      Current Status
+                    </h4>
+                    <p style={{ lineHeight: '1.7', color: '#4b5563' }}>
+                      {selected.detailedInfo.currentStatus}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Right Column */}
@@ -1234,36 +1864,44 @@ export default function Explore() {
 
                 {/* Quick Facts */}
                 <div className="mb-4">
-                  <h5 className="h6 fw-bold mb-3" style={{ color: '#1e3a5f' }}>
+                  <h5 className="h6 fw-bold mb-3" style={{ color: '#0c4a6e' }}>
                     <Info size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                     Quick Facts
                   </h5>
                   <div className="mb-2">
                     <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Category</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#1e3a5f' }}>{selected.category}</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#0c4a6e' }}>{selected.category}</div>
                   </div>
-                  <div className="mb-2">
-                    <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Heritage Status</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#1e3a5f' }}>{selected.heritageStatus}</div>
-                  </div>
-                  <div className="mb-2">
-                    <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Historical Period</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#1e3a5f' }}>{selected.era}</div>
-                  </div>
-                  <div className="mb-2">
-                    <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Region</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#1e3a5f' }}>{selected.region}</div>
-                  </div>
-                  <div className="mb-2">
-                    <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Established</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#1e3a5f' }}>{selected.established}</div>
-                  </div>
+                  {selected.heritageStatus && (
+                    <div className="mb-2">
+                      <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Heritage Status</div>
+                      <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#0c4a6e' }}>{selected.heritageStatus}</div>
+                    </div>
+                  )}
+                  {selected.era && (
+                    <div className="mb-2">
+                      <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Historical Period</div>
+                      <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#0c4a6e' }}>{selected.era}</div>
+                    </div>
+                  )}
+                  {selected.region && (
+                    <div className="mb-2">
+                      <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Region</div>
+                      <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#0c4a6e' }}>{selected.region}</div>
+                    </div>
+                  )}
+                  {selected.established && (
+                    <div className="mb-2">
+                      <div style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '2px' }}>Established</div>
+                      <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#0c4a6e' }}>{selected.established}</div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Cultural Practices */}
-                {selected.culturalPractices && (
+                {selected.culturalPractices && selected.culturalPractices.length > 0 && (
                   <div className="mb-4">
-                    <h5 className="h6 fw-bold mb-3" style={{ color: '#1e3a5f' }}>
+                    <h5 className="h6 fw-bold mb-3" style={{ color: '#0c4a6e' }}>
                       <Users size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                       Cultural Practices
                     </h5>
@@ -1288,9 +1926,9 @@ export default function Explore() {
                 )}
 
                 {/* Native Flora & Fauna */}
-                {selected.nativeFloraFauna && (
+                {selected.nativeFloraFauna && selected.nativeFloraFauna.length > 0 && (
                   <div className="mb-4">
-                    <h5 className="h6 fw-bold mb-3" style={{ color: '#1e3a5f' }}>
+                    <h5 className="h6 fw-bold mb-3" style={{ color: '#0c4a6e' }}>
                       <Flag size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                       Native Species
                     </h5>
@@ -1315,26 +1953,30 @@ export default function Explore() {
                 )}
 
                 {/* Preservation */}
-                <div className="mb-4">
-                  <h5 className="h6 fw-bold mb-3" style={{ color: '#1e3a5f' }}>
-                    <Award size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    Preservation
-                  </h5>
-                  <p style={{ fontSize: '0.85rem', color: '#4b5563', lineHeight: '1.5' }}>
-                    {selected.preservation}
-                  </p>
-                </div>
+                {selected.preservation && (
+                  <div className="mb-4">
+                    <h5 className="h6 fw-bold mb-3" style={{ color: '#0c4a6e' }}>
+                      <Award size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                      Preservation
+                    </h5>
+                    <p style={{ fontSize: '0.85rem', color: '#4b5563', lineHeight: '1.5' }}>
+                      {selected.preservation}
+                    </p>
+                  </div>
+                )}
 
                 {/* Visitor Information */}
-                <div>
-                  <h5 className="h6 fw-bold mb-3" style={{ color: '#1e3a5f' }}>
-                    <Home size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    Visitor Information
-                  </h5>
-                  <p style={{ fontSize: '0.85rem', color: '#4b5563', lineHeight: '1.5' }}>
-                    {selected.detailedInfo.visitorInfo}
-                  </p>
-                </div>
+                {selected.detailedInfo?.visitorInfo && (
+                  <div>
+                    <h5 className="h6 fw-bold mb-3" style={{ color: '#0c4a6e' }}>
+                      <Home size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                      Visitor Information
+                    </h5>
+                    <p style={{ fontSize: '0.85rem', color: '#4b5563', lineHeight: '1.5' }}>
+                      {selected.detailedInfo.visitorInfo}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1361,7 +2003,7 @@ export default function Explore() {
             }}
           >
             <MapPin size={16} style={{ color: '#3b82f6' }} />
-            <span style={{ fontSize: '0.9rem', color: '#1e3a5f', fontWeight: '600' }}>
+            <span style={{ fontSize: '0.9rem', color: '#0c4a6e', fontWeight: '600' }}>
               Zoomed to: {selected?.name}
             </span>
           </div>
@@ -1370,17 +2012,6 @@ export default function Explore() {
 
       <style>{`
         @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
-
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
 
         @keyframes slideUp {
           from {
@@ -1415,7 +2046,7 @@ export default function Explore() {
 
         div::-webkit-scrollbar-thumb {
           background: rgba(255, 255, 255, 0.2);
-          border-radius: 3px;
+          borderRadius: 3px;
         }
 
         div::-webkit-scrollbar-thumb:hover {
@@ -1429,7 +2060,7 @@ export default function Explore() {
         .form-control:focus {
           background: rgba(255, 255, 255, 0.15);
           border-color: rgba(59, 130, 246, 0.5);
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          boxShadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
           outline: none;
           color: white;
         }

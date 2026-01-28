@@ -30,96 +30,12 @@ function Navbar() {
       }}
     >
       <div className="container-fluid">
-        <div className="d-flex align-items-center justify-content-between py-3 px-2">
-          {/* Logo */}
+        <div className="d-flex align-items-center justify-content-center justify-content-md-between py-3 px-2">
+          {/* Logo - Centered for mobile, left for desktop */}
           <div className="d-flex align-items-center">
             <Link to="/" className="text-white text-decoration-none">
               <div className="d-flex align-items-center gap-3">
-                {/* Logo SVG */}
-                <svg 
-                  width="50" 
-                  height="50" 
-                  viewBox="0 0 100 100"
-                  style={{
-                    filter: 'drop-shadow(0 2px 8px rgba(59, 130, 246, 0.4))',
-                    transition: 'transform 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                >
-                  <defs>
-                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#3b82f6', stopOpacity: 1 }} />
-                      <stop offset="100%" style={{ stopColor: '#93c5fd', stopOpacity: 1 }} />
-                    </linearGradient>
-                    <linearGradient id="sunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#fbbf24', stopOpacity: 1 }} />
-                      <stop offset="100%" style={{ stopColor: '#f59e0b', stopOpacity: 1 }} />
-                    </linearGradient>
-                  </defs>
-                  
-                  {/* Outer Circle */}
-                  <circle cx="50" cy="50" r="45" fill="url(#logoGradient)" opacity="0.2"/>
-                  
-                  {/* Sun */}
-                  <circle cx="50" cy="30" r="12" fill="url(#sunGradient)"/>
-                  
-                  {/* Sun rays */}
-                  {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => {
-                    const radian = (angle * Math.PI) / 180;
-                    const x1 = 50 + Math.cos(radian) * 16;
-                    const y1 = 30 + Math.sin(radian) * 16;
-                    const x2 = 50 + Math.cos(radian) * 20;
-                    const y2 = 30 + Math.sin(radian) * 20;
-                    return (
-                      <line 
-                        key={i}
-                        x1={x1} 
-                        y1={y1} 
-                        x2={x2} 
-                        y2={y2} 
-                        stroke="#fbbf24" 
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    );
-                  })}
-                  
-                  {/* Mountains - 3 peaks */}
-                  <path 
-                    d="M 15 80 L 35 50 L 50 65 L 35 65 Z" 
-                    fill="url(#logoGradient)"
-                  />
-                  <path 
-                    d="M 30 80 L 50 45 L 70 80 Z" 
-                    fill="url(#logoGradient)"
-                    opacity="0.9"
-                  />
-                  <path 
-                    d="M 50 80 L 65 55 L 85 80 Z" 
-                    fill="url(#logoGradient)"
-                    opacity="0.7"
-                  />
-                  
-                  {/* Snow caps */}
-                  <path 
-                    d="M 47 47 L 50 45 L 53 47 Z" 
-                    fill="white"
-                  />
-                  <path 
-                    d="M 62 57 L 65 55 L 68 57 Z" 
-                    fill="white"
-                  />
-                  
-                  {/* Ocean waves at bottom */}
-                  <path 
-                    d="M 0 85 Q 25 82 50 85 T 100 85 L 100 100 L 0 100 Z" 
-                    fill="#3b82f6"
-                    opacity="0.3"
-                  />
-                </svg>
-                
-                {/* Brand Name */}
+                {/* Brand Name Only */}
                 <div>
                   <h1 
                     className="h4 mb-0 fw-bold" 
@@ -132,25 +48,25 @@ function Navbar() {
                       backgroundClip: 'text'
                     }}
                   >
-                    MAHARLIKA
+                    SUGBOSPHERE
                   </h1>
                   <small 
-                    className="text-muted" 
+                    className="text-muted d-none d-md-block" 
                     style={{ 
                       fontSize: '0.65rem', 
                       letterSpacing: '1.5px', 
                       color: '#60a5fa' 
                     }}
                   >
-                    PHILIPPINE HERITAGE EXPLORER
+                    CEBU HERITAGE EXPLORER
                   </small>
                 </div>
               </div>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="d-none d-md-flex align-items-center gap-1 flex-grow-1 justify-content-center">
+          {/* Desktop Navigation - Centered */}
+          <div className="d-none d-md-flex align-items-center gap-1 position-absolute start-50 translate-middle-x">
             {navItems.map((item, index) => {
               const isActive = location.pathname === item.to;
               return (
@@ -184,7 +100,7 @@ function Navbar() {
             })}
           </div>
 
-          {/* Empty div to maintain layout (replacing auth buttons) */}
+          {/* Cebu Heritage Badge - Right side for desktop */}
           <div className="d-none d-md-flex align-items-center gap-2">
             <div style={{
               padding: '8px 16px',
@@ -196,14 +112,14 @@ function Navbar() {
               fontWeight: '500',
               animation: 'fadeIn 0.6s ease'
             }}>
-              🇵🇭 Philippine Heritage
+              🏝️ Cebu Heritage
             </div>
           </div>
 
           {/* Hamburger Menu Button - Mobile */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="btn btn-dark p-2 d-md-none"
+            className="btn btn-dark p-2 d-md-none position-absolute end-0 me-3"
             style={{ 
               border: 'none',
               transition: 'transform 0.3s ease'
@@ -255,7 +171,7 @@ function Navbar() {
                 );
               })}
               
-              {/* Project Info - Mobile (replacing auth buttons) */}
+              {/* Project Info - Mobile */}
               <div className="px-3 py-3 mt-2 border-top border-secondary" style={{ animation: 'fadeIn 0.6s ease' }}>
                 <div className="text-center">
                   <div style={{
@@ -266,11 +182,11 @@ function Navbar() {
                     fontSize: '0.85rem',
                     fontWeight: '500'
                   }}>
-                    <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>🇵🇭</span>
-                    Philippine Cultural Heritage Explorer
+                    <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>🏝️</span>
+                    Cebu Cultural Heritage Explorer
                   </div>
                   <p className="text-white-50 small mt-2 mb-0">
-                    A capstone project showcasing Philippine heritage
+                    Exploring Cebu's rich cultural and natural heritage
                   </p>
                 </div>
               </div>
