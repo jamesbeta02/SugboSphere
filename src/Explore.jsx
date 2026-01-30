@@ -1296,40 +1296,34 @@ export default function Explore() {
           flexDirection: 'column'
         }}
       >
-        {/* Header */}
-        <div style={{ padding: '25px 20px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-          <div className="d-flex align-items-center gap-3 mb-3">
-            <div style={{
-              width: '50px',
-              height: '50px',
-              background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
-            }}>
-              <Globe size={24} color="white" />
-            </div>
-            <div>
-              <h2 style={{ 
-                color: 'white', 
-                fontSize: '1.6rem',
-                fontWeight: 'bold',
-                margin: 0
-              }}>
-                SugboSphere
-              </h2>
-              <p style={{ 
-                color: 'rgba(255, 255, 255, 0.7)', 
-                fontSize: '0.85rem',
-                margin: 0
-              }}>
-                Explore Cebu's Heritage & Natural Wonders
-              </p>
-            </div>
-          </div>
-
+       {/* Header - UPDATED TO MATCH NAVBAR */}
+<div style={{ padding: '25px 20px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+  <div className="d-flex align-items-center gap-3 mb-3">
+    <div>
+      <h2 style={{ 
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+        margin: 0,
+        letterSpacing: '2px',
+        textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+        background: 'linear-gradient(90deg, #fff 0%, #93c5fd 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text'
+      }}>
+        SUGBOSPHERE
+      </h2>
+      <p style={{ 
+        fontSize: '0.65rem',
+        letterSpacing: '1.5px',
+        color: '#60a5fa',
+        margin: 0,
+        marginTop: '2px'
+      }}>
+        CEBU HERITAGE EXPLORER
+      </p>
+    </div>
+  </div>
           {/* Search */}
           <div className="position-relative mb-3">
             <input
