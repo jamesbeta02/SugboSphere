@@ -39,7 +39,7 @@ function About() {
     },
     {
       name: 'John Albert Tabasa',
-      role: 'Frontend Developer',
+      role: 'Assistant Developer',
       description: 'Creates responsive interfaces and implements user experience features',
       icon: <Layers />,
       color: '#8b5cf6',

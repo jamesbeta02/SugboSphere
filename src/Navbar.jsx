@@ -1,10 +1,11 @@
 import { Home, Compass, Map, Globe, Menu, X, LogIn, LogOut, Shield, User } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import AuthModal from './AuthModal';
-import AdminPanel from './AdminPanel';
+import AdminPanel from './Adminpanel';
+import NotificationBell from './Notificationbell';
 
 // ── Admin emails ──
 const ADMIN_EMAILS = ['admin123@gmail.com'];
@@ -19,6 +20,7 @@ function Navbar() {
   const avatarBtnRef                    = useRef(null);
   const dropdownRef                     = useRef(null);
   const location                        = useLocation();
+  const navigate                        = useNavigate();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => setUser(u));
@@ -48,6 +50,7 @@ function Navbar() {
   const handleSignOut = async () => {
     await signOut(auth);
     setUserMenuOpen(false);
+    navigate('/');
   };
 
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
@@ -145,34 +148,40 @@ function Navbar() {
               )}
 
               {user ? (
-                /* ── Logged-in: show avatar + name ── */
-                <button
-                  ref={avatarBtnRef}
-                  onClick={handleAvatarClick}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    padding: '7px 14px', borderRadius: '20px', border: 'none', cursor: 'pointer',
-                    background: userMenuOpen ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.15)',
-                    color: 'white', fontSize: '0.85rem', fontWeight: '500',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.25)'}
-                  onMouseLeave={e => { if (!userMenuOpen) e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; }}
-                >
-                  {/* Avatar circle */}
-                  <div style={{
-                    width: '28px', height: '28px', borderRadius: '50%',
-                    background: avatarGrad,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'white', fontWeight: '700', fontSize: '0.82rem', flexShrink: 0
-                  }}>
-                    {(user.displayName || user.email || '?')[0].toUpperCase()}
-                  </div>
-                  {/* Display name */}
-                  <span style={{ color: 'white', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {user.displayName || user.email?.split('@')[0]}
-                  </span>
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+
+                  {/* ── Notification Bell — only for regular users, not admin ── */}
+                  {!isAdmin && <NotificationBell />}
+
+                  {/* ── Avatar + name button ── */}
+                  <button
+                    ref={avatarBtnRef}
+                    onClick={handleAvatarClick}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      padding: '7px 14px', borderRadius: '20px', border: 'none', cursor: 'pointer',
+                      background: userMenuOpen ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.15)',
+                      color: 'white', fontSize: '0.85rem', fontWeight: '500',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.25)'}
+                    onMouseLeave={e => { if (!userMenuOpen) e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; }}
+                  >
+                    {/* Avatar circle */}
+                    <div style={{
+                      width: '28px', height: '28px', borderRadius: '50%',
+                      background: avatarGrad,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'white', fontWeight: '700', fontSize: '0.82rem', flexShrink: 0
+                    }}>
+                      {(user.displayName || user.email || '?')[0].toUpperCase()}
+                    </div>
+                    {/* Display name */}
+                    <span style={{ color: 'white', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {user.displayName || user.email?.split('@')[0]}
+                    </span>
+                  </button>
+                </div>
               ) : (
                 /* ── Not logged in: single Sign In button ── */
                 <button
@@ -237,23 +246,32 @@ function Navbar() {
                   {user ? (
                     <>
                       {/* Who's logged in */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{
-                          width: '36px', height: '36px', borderRadius: '50%',
-                          background: avatarGrad, flexShrink: 0,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          color: 'white', fontWeight: '700', fontSize: '1rem'
-                        }}>
-                          {(user.displayName || user.email || '?')[0].toUpperCase()}
-                        </div>
-                        <div>
-                          <div style={{ color: 'white', fontWeight: '600', fontSize: '0.88rem' }}>
-                            {user.displayName || user.email?.split('@')[0]}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div style={{
+                            width: '36px', height: '36px', borderRadius: '50%',
+                            background: avatarGrad, flexShrink: 0,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: 'white', fontWeight: '700', fontSize: '1rem'
+                          }}>
+                            {(user.displayName || user.email || '?')[0].toUpperCase()}
                           </div>
-                          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>
-                            {isAdmin ? '⭐ Administrator' : 'User'}
+                          <div>
+                            <div style={{ color: 'white', fontWeight: '600', fontSize: '0.88rem' }}>
+                              {user.displayName || user.email?.split('@')[0]}
+                            </div>
+                            <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>
+                              {isAdmin ? '⭐ Administrator' : 'User'}
+                            </div>
                           </div>
                         </div>
+
+                        {/* ── Mobile Notification Bell — only for regular users ── */}
+                        {!isAdmin && (
+                          <div style={{ marginLeft: 'auto' }}>
+                            <NotificationBell />
+                          </div>
+                        )}
                       </div>
 
                       {/* Admin panel button (admin only) */}

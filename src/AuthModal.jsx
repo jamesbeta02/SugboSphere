@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Mail, Lock, Eye, EyeOff, LogIn, Shield, User, UserPlus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -13,6 +14,8 @@ import { auth, db } from './firebase';
 const ADMIN_EMAILS = ['admin123@gmail.com'];
 
 function AuthModal({ onClose }) {
+  const navigate = useNavigate();
+
   const [tab, setTab]                   = useState('user');  // 'user' | 'admin'
   const [mode, setMode]                 = useState('login'); // 'login' | 'signup'
   const [showPassword, setShowPassword] = useState(false);
@@ -46,6 +49,14 @@ function AuthModal({ onClose }) {
       'auth/operation-not-allowed': 'Email/Password login is not enabled. Please enable it in Firebase Console.',
     };
     return map[code] || `Login failed (${code}). Please try again.`;
+  };
+
+  // ── Redirect helper ──
+  const redirectToHome = () => {
+    setTimeout(() => {
+      onClose();
+      navigate('/');
+    }, 1400);
   };
 
   // ── User: Login or Signup ──
@@ -94,7 +105,7 @@ function AuthModal({ onClose }) {
       }
 
       setStatus('success');
-      setTimeout(() => onClose(), 1400);
+      redirectToHome();
     } catch (err) {
       console.error('User auth error:', err.code, err.message);
       setStatus('error');
@@ -134,7 +145,7 @@ function AuthModal({ onClose }) {
       }
 
       setStatus('success');
-      setTimeout(() => onClose(), 1400);
+      redirectToHome();
     } catch (err) {
       console.error('Admin auth error:', err.code, err.message);
       setStatus('error');
@@ -281,7 +292,7 @@ function AuthModal({ onClose }) {
                 <Mail size={15} color="#9ca3af" style={{ position: 'absolute', left: '13px', top: '37px' }} />
                 <input
                   type="email"
-                  placeholder={isAdmin ? 'admin123@gmail.com' : 'your@email.com'}
+                  placeholder={isAdmin ? '' : ''}
                   value={form.email} onChange={setField('email')} onKeyDown={handleKeyDown}
                   style={inputStyle}
                 />
@@ -293,7 +304,7 @@ function AuthModal({ onClose }) {
                 <Lock size={15} color="#9ca3af" style={{ position: 'absolute', left: '13px', top: '37px' }} />
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
+                  placeholder=""
                   value={form.password} onChange={setField('password')} onKeyDown={handleKeyDown}
                   style={{ ...inputStyle, paddingRight: '42px' }}
                 />
